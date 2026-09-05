@@ -18,6 +18,7 @@ export const CUISINES: Cuisine[] = [
   { slug: "mexican", label: "Mexican", emoji: "🌮" },
   { slug: "venezuelan", label: "Venezuelan", emoji: "🌽" },
   { slug: "ecuadorian", label: "Ecuadorian", emoji: "🦐" },
+  { slug: "peruvian", label: "Peruvian", emoji: "🌶️" },
   { slug: "spanish", label: "Spanish", emoji: "🥘" },
   { slug: "catalan", label: "Catalan", emoji: "🍅" },
   { slug: "french", label: "French", emoji: "🥐" },
