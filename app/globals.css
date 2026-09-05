@@ -133,6 +133,12 @@ a {
 }
 
 /* ===== TUMBLE (the spin mechanic) ===== */
+.spin-column {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .slot-frame {
   width: 300px;
   height: 300px;

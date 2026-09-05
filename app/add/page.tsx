@@ -52,7 +52,7 @@ export default function AddPage() {
     if (!name.trim()) return;
     startTransition(async () => {
       await addRestaurant({ name, cuisine: cuisine || "unknown", note, sourceUrl });
-      router.push("/");
+      router.push("/restaurants");
     });
   }
 

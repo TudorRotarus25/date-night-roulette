@@ -9,6 +9,7 @@ export type PoolRestaurant = {
   name: string;
   cuisine: string;
   note: string | null;
+  sourceUrl: string | null;
 };
 
 type ReelItem = { em: string; nm: string };
@@ -140,7 +141,7 @@ export function Tumble({ pool: initialPool }: { pool: PoolRestaurant[] }) {
   return (
     <div className="flex flex-col items-center w-full">
       {!showResult && (
-        <>
+        <div className="spin-column">
           <div className="slot-frame">
             <div className="slot-window" />
             <div className={`reel${phase === "rolling" ? " blur" : ""}`} ref={reelRef}>
@@ -167,7 +168,7 @@ export function Tumble({ pool: initialPool }: { pool: PoolRestaurant[] }) {
               ? "Nothing left to spin tonight."
               : `${available.length} in the pool`}
           </p>
-        </>
+        </div>
       )}
 
       {showResult && (
@@ -177,6 +178,17 @@ export function Tumble({ pool: initialPool }: { pool: PoolRestaurant[] }) {
           <div className="nm">{winner.name}</div>
           <div className="cz">{cuisineFor(winner.cuisine).label}</div>
           {winner.note && <div className="note">{winner.note}</div>}
+          {winner.sourceUrl && (
+            <a
+              href={winner.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm"
+              style={{ color: "var(--accent)", marginTop: 12 }}
+            >
+              Open in Maps →
+            </a>
+          )}
 
           {confirmed ? (
             <>
