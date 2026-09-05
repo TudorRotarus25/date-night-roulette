@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Date Night Roulette — Three Ways to Spin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { interpolate-size: allow-keywords; }
+
+/* ===== THEMES ===== */
+html.theme-light {
+  --bg: #FFF7F4; --surface: #FFFFFF; --surface-hover: #FFF0EB;
+  --border: rgba(90,40,55,0.10);
+  --text: #2C161E; --text-secondary: #8A6A74;
+  --accent: #D6455F; --accent-secondary: #E07B3C;
+  --positive: #2F8F6B; --negative: #D6455F; --warning: #C77B22;
+  --seg-ink: #3A1F28;
+  --glow: rgba(214,69,95,0.18);
+  --phone-shell: #2C161E;
+}
+html.theme-dark {
+  --bg: #140E11; --surface: #1F1519; --surface-hover: #2B1E23;
+  --border: rgba(255,225,232,0.09);
+  --text: #F6E9EC; --text-secondary: #AA8B94;
+  --accent: #FF6B85; --accent-secondary: #FFA45C;
+  --positive: #4ECFA0; --negative: #FF6B85; --warning: #F0B45E;
+  --seg-ink: #3A1F28;
+  --glow: rgba(255,107,133,0.22);
+  --phone-shell: #000000;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg); color: var(--text);
+  line-height: 1.6; -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+  transition: background .3s, color .3s;
+  scrollbar-gutter: stable;
+  overflow-x: hidden;
+}
+/* warm atmosphere — one technique only */
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(760px 420px at 12% -6%, var(--glow), transparent 62%),
+    radial-gradient(680px 400px at 92% 4%, rgba(224,123,60,.13), transparent 60%);
+}
+main { position: relative; z-index: 1; }
+
+h1,h2,h3,h4 { color: var(--text); letter-spacing: -0.03em; line-height: 1.08; text-wrap: balance; }
+h1 { font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: clamp(2.6rem, 7vw, 3.6rem); }
+h2 { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: clamp(2rem, 4.4vw, 2.4rem); }
+h3 { font-weight: 600; font-size: 1.5rem; }
+p, li, td, th, span, label { color: var(--text); font-weight: 400; }
+.text-secondary { color: var(--text-secondary); }
+
+.wrap { max-width: 1320px; margin: 0 auto; padding: 0 24px; }
+
+/* ===== HEADER ===== */
+.hero { padding: 72px 0 56px; text-align: center; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+  padding: 7px 14px; border-radius: 999px; margin-bottom: 22px;
+}
+.hero p.lede { font-size: 1.125rem; color: var(--text-secondary); max-width: 660px; margin: 20px auto 0; }
+
+/* ===== SECTIONS ===== */
+section { margin-bottom: 72px; }
+.section-head { margin-bottom: 32px; }
+.section-head p { color: var(--text-secondary); margin-top: 10px; max-width: 720px; }
+
+/* ===== PHONE RAIL ===== */
+.rail { display: flex; gap: 28px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
+.mech { width: 390px; max-width: 100%; }
+.mech-head { margin-bottom: 14px; padding: 0 4px; }
+.mech-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 8px; font-size: 13px; font-weight: 700;
+  background: var(--accent); color: #fff; margin-right: 10px;
+}
+.mech-head h3 { display: inline; vertical-align: middle; font-size: 1.5rem; }
+.mech-head p { font-size: 14px; color: var(--text-secondary); margin-top: 8px; }
+
+.phone {
+  background: var(--phone-shell); border-radius: 40px; padding: 10px;
+  box-shadow: 0 24px 60px rgba(60,20,35,.22), 0 2px 6px rgba(60,20,35,.14);
+}
+.screen {
+  background: var(--surface); border-radius: 31px; overflow: hidden;
+  height: 720px; display: flex; flex-direction: column; position: relative;
+}
+.statusbar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 22px 6px; font-size: 12px; font-weight: 600; color: var(--text-secondary);
+  flex-shrink: 0;
+}
+.appbar { padding: 4px 22px 12px; flex-shrink: 0; }
+.appbar .title { font-family: 'Fraunces', Georgia, serif; font-size: 20px; font-weight: 700; }
+.appbar .sub { font-size: 12.5px; color: var(--text-secondary); }
+.stage { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 20px 22px; position: relative; }
+
+/* ===== WHEEL ===== */
+.wheel-wrap { position: relative; width: 320px; height: 320px; display: flex; align-items: center; justify-content: center; }
+.wheel-wrap.small { width: 300px; height: 300px; }
+.wheel-svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 10px 22px rgba(60,20,35,.18)); }
+.spinner { transform-origin: 50% 50%; }
+.pointer {
+  position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
+  width: 0; height: 0; z-index: 3;
+  border-left: 13px solid transparent; border-right: 13px solid transparent;
+  border-top: 22px solid var(--accent);
+  filter: drop-shadow(0 3px 5px rgba(0,0,0,.28));
+}
+.hub {
+  position: absolute; width: 58px; height: 58px; border-radius: 50%;
+  background: var(--surface); border: 3px solid var(--accent);
+  display: flex; align-items: center; justify-content: center; font-size: 24px; z-index: 2;
+  box-shadow: 0 4px 14px rgba(60,20,35,.2);
+}
+
+/* ===== SLOT ===== */
+.slot-frame {
+  width: 300px; height: 300px; border-radius: 26px; overflow: hidden; position: relative;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 9%, var(--surface)), var(--surface));
+  border: 1px solid var(--border);
+  box-shadow: inset 0 0 40px rgba(60,20,35,.10);
+}
+.slot-frame::before, .slot-frame::after {
+  content: ''; position: absolute; left: 0; right: 0; height: 92px; z-index: 2; pointer-events: none;
+}
+.slot-frame::before { top: 0; background: linear-gradient(180deg, var(--surface) 8%, transparent); }
+.slot-frame::after { bottom: 0; background: linear-gradient(0deg, var(--surface) 8%, transparent); }
+.slot-window {
+  position: absolute; top: 50%; left: 12px; right: 12px; height: 108px; transform: translateY(-50%);
+  border-top: 2px solid var(--accent); border-bottom: 2px solid var(--accent); z-index: 3; pointer-events: none;
+  border-radius: 4px;
+}
+.reel { position: absolute; top: 50%; left: 0; right: 0; margin-top: -54px; }
+.reel-item {
+  height: 108px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px; text-align: center; padding: 0 16px;
+}
+.reel-item .em { font-size: 40px; line-height: 1; }
+.reel-item .nm { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.reel.blur .reel-item { filter: blur(2.2px); }
+
+/* ===== FINALISTS STRIP ===== */
+.finalists { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 14px; min-height: 30px; }
+.fchip {
+  font-size: 12px; font-weight: 600; padding: 5px 10px; border-radius: 999px;
+  background: var(--surface-hover); border: 1px solid var(--border); color: var(--text);
+  animation: popIn .32s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes popIn { from { opacity:0; transform: scale(.7);} to {opacity:1; transform: scale(1);} }
+
+/* ===== BUTTONS ===== */
+.btn {
+  font-family: inherit; font-size: 16px; font-weight: 600; border-radius: 14px;
+  padding: 15px 20px; cursor: pointer; border: 1px solid transparent; width: 100%;
+  transition: background .18s, box-shadow .18s, color .18s; letter-spacing: -0.01em;
+}
+.btn-primary { background: var(--accent); color: #fff; box-shadow: 0 6px 16px var(--glow); }
+.btn-primary:hover { background: color-mix(in srgb, var(--accent) 86%, #000); }
+.btn-ghost { background: var(--surface-hover); color: var(--text); border-color: var(--border); }
+.btn-ghost:hover { background: color-mix(in srgb, var(--accent) 10%, var(--surface-hover)); }
+.btn-quiet { background: transparent; color: var(--text-secondary); }
+.btn-quiet:hover { color: var(--accent); background: var(--surface-hover); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn-row { display: flex; flex-direction: column; gap: 9px; width: 100%; margin-top: 16px; }
+.pool-note { font-size: 12.5px; color: var(--text-secondary); text-align: center; margin-top: 12px; }
+
+/* ===== RESULT ===== */
+.result {
+  position: absolute; inset: 0; background: var(--surface); z-index: 6;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 26px 24px; text-align: center;
+  animation: resultIn .42s cubic-bezier(0.34,1.4,0.64,1) both;
+}
+@keyframes resultIn { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
+.result .kicker { font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+.result .em { font-size: 76px; line-height: 1; margin: 14px 0 6px; animation: bounceIn .55s cubic-bezier(0.34,1.56,0.64,1) both .1s; }
+@keyframes bounceIn { from { opacity:0; transform: scale(.4) rotate(-14deg);} to {opacity:1; transform: none;} }
+.result .nm { font-family: 'Fraunces', Georgia, serif; font-size: 27px; font-weight: 700; line-height: 1.14; }
+.result .cz { font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-top: 6px; text-transform: uppercase; letter-spacing: .1em; }
+.result .note {
+  font-size: 14.5px; color: var(--text); margin-top: 16px; font-style: italic;
+  background: var(--surface-hover); border: 1px solid var(--border);
+  padding: 12px 16px; border-radius: 12px; max-width: 290px;
+}
+.result .btn-row { margin-top: 22px; }
+.toast {
+  position: absolute; left: 20px; right: 20px; bottom: 20px; z-index: 8;
+  background: var(--text); color: var(--surface); border-radius: 14px;
+  padding: 13px 16px; font-size: 14px; font-weight: 600; text-align: center;
+  animation: fadeInUp .3s ease-out both;
+}
+.hidden { display: none !important; }
+
+/* ===== VERDICT TABLE ===== */
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 26px;
+  transition: box-shadow .2s ease;
+}
+.card:hover { box-shadow: 0 0 0 1px var(--border), 0 10px 24px rgba(60,20,35,.10); }
+.card h4 { font-size: 1.0625rem; font-weight: 600; margin-bottom: 4px; }
+.card .verdict-tag {
+  display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 999px; margin-bottom: 14px;
+}
+.tag-yes { background: color-mix(in srgb, var(--positive) 15%, transparent); color: var(--positive); }
+.tag-no  { background: color-mix(in srgb, var(--negative) 14%, transparent); color: var(--negative); }
+.tag-mid { background: color-mix(in srgb, var(--warning) 17%, transparent); color: var(--warning); }
+.card ul { list-style: none; margin-top: 8px; }
+.card li { font-size: 14.5px; padding: 7px 0 7px 24px; position: relative; color: var(--text-secondary); }
+.card li::before { position: absolute; left: 0; top: 7px; font-weight: 700; }
+.card li.pro::before { content: '+'; color: var(--positive); }
+.card li.con::before { content: '−'; color: var(--negative); }
+
+.tablewrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 620px; }
+th, td { text-align: left; padding: 15px 20px; font-size: 14.5px; border-bottom: 1px solid var(--border); }
+th { font-weight: 600; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-secondary); }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: var(--surface-hover); }
+td.q { font-weight: 600; }
+
+.callout {
+  border-left: 3px solid var(--accent); background: var(--surface);
+  border-radius: 0 14px 14px 0; padding: 22px 26px;
+  border-top: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
+}
+.callout p + p { margin-top: 12px; }
+footer { padding: 40px 0 64px; text-align: center; color: var(--text-secondary); font-size: 13.5px; }
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(24px);} to { opacity: 1; transform: none; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.animate { animation: fadeInUp .6s ease-out both; }
+.animate.delay-1 { animation-delay: .1s; } .animate.delay-2 { animation-delay: .2s; }
+.animate.delay-3 { animation-delay: .3s; } .animate.delay-4 { animation-delay: .4s; }
+.animate.delay-5 { animation-delay: .5s; } .animate.delay-6 { animation-delay: .6s; }
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+
+/* ===== MENU ===== */
+.viz-menu { position: fixed; top: 16px; right: 16px; z-index: 9999; }
+.viz-menu-toggle { width: 44px; height: 44px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(12px); transition: all .2s; }
+.viz-menu-toggle:hover { background: var(--surface-hover); }
+.viz-menu-dropdown { position: absolute; top: 52px; right: 0; min-width: 200px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 8px; opacity: 0; visibility: hidden; transform: translateY(-8px); transition: all .2s; backdrop-filter: blur(16px); box-shadow: 0 12px 30px rgba(60,20,35,.16); }
+.viz-menu-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
+.viz-menu-dropdown button { width: 100%; padding: 10px 14px; border: none; border-radius: 8px; background: transparent; color: var(--text); font-size: 14px; font-family: inherit; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px; transition: background .15s; }
+.viz-menu-dropdown button:hover { background: var(--surface-hover); }
+.skip-to-content { position: absolute; top: -40px; left: 6px; background: var(--accent); color: #fff; padding: 8px 12px; text-decoration: none; border-radius: 4px; opacity: 0; pointer-events: none; transition: all .2s; z-index: 10000; }
+.skip-to-content:focus { top: 6px; opacity: 1; pointer-events: auto; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ===== PRINT ===== */
+@media print {
+  body { background: #fff !important; color: #000 !important; }
+  body::before { display: none; }
+  .viz-menu { display: none !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+  .phone { box-shadow: none; border: 1px solid #ccc; }
+  .screen { height: auto; min-height: 620px; }
+  .card { break-inside: avoid; border: 1px solid #ddd; box-shadow: none; }
+  * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}
+@page { margin: 1in; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .wrap { padding: 0 16px; }
+  .hero { padding: 52px 0 40px; }
+  section { margin-bottom: 56px; }
+  .rail { gap: 40px; }
+}
+@media (max-width: 420px) {
+  .mech, .phone { width: 100%; }
+  .screen { height: 680px; }
+  .wheel-wrap { width: 280px; height: 280px; }
+  .wheel-wrap.small { width: 265px; height: 265px; }
+  .slot-frame { width: 265px; height: 275px; }
+}
+@media (max-width: 375px) { body { overflow-x: hidden; } .card { padding: 18px; } }
+</style>
+</head>
+<body>
+<a href="#main-content" class="skip-to-content">Skip to content</a>
+
+<div class="viz-menu">
+  <button class="viz-menu-toggle" onclick="toggleMenu()" aria-label="Menu" aria-haspopup="true">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/></svg>
+  </button>
+  <div class="viz-menu-dropdown" id="vizMenuDropdown">
+    <button onclick="cycleTheme()"><span id="themeIcon">☀️</span><span id="themeLabel">Light</span></button>
+    <button onclick="downloadImage()"><span>📥</span><span>Download PNG</span></button>
+    <button onclick="window.print()"><span>🖨️</span><span>Print / PDF</span></button>
+  </div>
+</div>
+
+<main id="main-content" role="main">
+  <div class="wrap">
+
+    <header class="hero">
+      <div class="eyebrow animate">Phase 0 · Design exploration</div>
+      <h1 class="animate delay-1">Three ways to<br>decide where to eat</h1>
+      <p class="lede animate delay-2">All three are live. Spin each one and pick the one that <em>feels</em> right — they use the same 20 restaurants, land on the same result screen, and are all uniformly random. Designed at 390&nbsp;px, because that's where you'll be standing.</p>
+    </header>
+
+    <section aria-labelledby="proto-head">
+      <div class="section-head animate delay-3">
+        <h2 id="proto-head">Try them</h2>
+        <p>Tap <strong>Spin</strong> on each. The thing to notice isn't which looks prettiest sitting still — it's which one makes the ten seconds before the answer feel good.</p>
+      </div>
+
+      <div class="rail">
+
+        <!-- ===== MECHANIC 1 ===== -->
+        <article class="mech animate delay-4">
+          <div class="mech-head">
+            <span class="mech-num">1</span><h3>The full wheel</h3>
+            <p>Every restaurant in the Pool gets a segment. What you originally pictured.</p>
+          </div>
+          <div class="phone">
+            <div class="screen">
+              <div class="statusbar"><span>21:04</span><span>Friday</span></div>
+              <div class="appbar"><div class="title">Date Night Roulette</div><div class="sub" id="sub1">20 in the pool</div></div>
+              <div class="stage">
+                <div class="wheel-wrap" id="wrap1">
+                  <div class="pointer"></div>
+                  <svg class="wheel-svg" viewBox="0 0 320 320" role="img" aria-label="Wheel with 20 restaurant segments"><g class="spinner" id="spin1"></g></svg>
+                  <div class="hub">🍷</div>
+                </div>
+                <div class="btn-row"><button class="btn btn-primary" id="go1" onclick="spinWheelFull()">Spin the wheel</button></div>
+                <p class="pool-note">All 20 on one wheel</p>
+              </div>
+              <div id="res1"></div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ===== MECHANIC 2 ===== -->
+        <article class="mech animate delay-5">
+          <div class="mech-head">
+            <span class="mech-num">2</span><h3>The finalists</h3>
+            <p>Seven drawn at random, then you spin those. Still uniform overall.</p>
+          </div>
+          <div class="phone">
+            <div class="screen">
+              <div class="statusbar"><span>21:04</span><span>Friday</span></div>
+              <div class="appbar"><div class="title">Date Night Roulette</div><div class="sub" id="sub2">20 in the pool</div></div>
+              <div class="stage">
+                <div class="finalists" id="chips2"></div>
+                <div class="wheel-wrap small" id="wrap2">
+                  <div class="pointer"></div>
+                  <svg class="wheel-svg" viewBox="0 0 320 320" role="img" aria-label="Wheel with seven finalist restaurants"><g class="spinner" id="spin2"></g></svg>
+                  <div class="hub">🌹</div>
+                </div>
+                <div class="btn-row"><button class="btn btn-primary" id="go2" onclick="drawFinalists()">Draw seven</button></div>
+                <p class="pool-note" id="note2">Shortlist first, then spin</p>
+              </div>
+              <div id="res2"></div>
+            </div>
+          </div>
+        </article>
+
+        <!-- ===== MECHANIC 3 ===== -->
+        <article class="mech animate delay-6">
+          <div class="mech-head">
+            <span class="mech-num">3</span><h3>The tumble</h3>
+            <p>No wheel. Restaurants roll past like a slot machine and settle.</p>
+          </div>
+          <div class="phone">
+            <div class="screen">
+              <div class="statusbar"><span>21:04</span><span>Friday</span></div>
+              <div class="appbar"><div class="title">Date Night Roulette</div><div class="sub" id="sub3">20 in the pool</div></div>
+              <div class="stage">
+                <div class="slot-frame">
+                  <div class="slot-window"></div>
+                  <div class="reel" id="reel3"></div>
+                </div>
+                <div class="btn-row"><button class="btn btn-primary" id="go3" onclick="spinSlot()">Roll it</button></div>
+                <p class="pool-note">Works at any pool size</p>
+              </div>
+              <div id="res3"></div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <section aria-labelledby="verdict-head" data-reveal>
+      <div class="section-head">
+        <h2 id="verdict-head">What each one costs you</h2>
+        <p>My read after building all three. The honest summary: the wheel is the most fun and the least legible, and the gap closes entirely once you stop trying to fit twenty names on it.</p>
+      </div>
+      <div class="grid3">
+        <div class="card">
+          <h4>1 · The full wheel</h4>
+          <div class="verdict-tag tag-mid">Charming, cramped</div>
+          <ul>
+            <li class="pro">Honest — you can see every option and that nothing's rigged</li>
+            <li class="pro">The single most satisfying spin of the three</li>
+            <li class="con">18° per segment. Names shrink to 9px and most get truncated</li>
+            <li class="con">Gets worse every time you add a restaurant — degrades as the app succeeds</li>
+            <li class="con">The emoji does all the work; the name is decoration</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>2 · The finalists</h4>
+          <div class="verdict-tag tag-yes">My recommendation</div>
+          <ul>
+            <li class="pro">51° per segment — names and emoji both properly readable</li>
+            <li class="pro">Two beats of drama instead of one: the shortlist, then the spin</li>
+            <li class="pro">Still perfectly uniform — a uniform draw of 7 then a uniform spin is uniform overall</li>
+            <li class="pro">Never degrades. Works identically at 20 restaurants or 200</li>
+            <li class="con">One extra tap</li>
+            <li class="con">Needs a sentence of explanation the first time</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>3 · The tumble</h4>
+          <div class="verdict-tag tag-mid">Safest, least special</div>
+          <ul>
+            <li class="pro">Full name and emoji at readable size, always</li>
+            <li class="pro">Simplest to build — no SVG geometry, no angle maths</li>
+            <li class="pro">Completely indifferent to pool size</li>
+            <li class="con">You can't see the field, so you take the result on trust</li>
+            <li class="con">Reads as a utility. It picks for you; it isn't an occasion</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="fair-head" data-reveal>
+      <div class="section-head"><h2 id="fair-head">The fairness question, settled</h2></div>
+      <div class="callout">
+        <p><strong>Mechanic 2 does not bias the outcome.</strong> Drawing 7 uniformly from 20, then spinning uniformly among those 7, gives every restaurant exactly 1-in-20. The shortlist is theatre, not a thumb on the scale — which matters, because you chose a uniform unfiltered wheel precisely so there'd be nothing to argue about.</p>
+        <p>The one thing it changes is <em>visible</em> rather than statistical: you see seven names instead of twenty, so you can't confirm by eye that a particular place was in the running tonight. If that bothers you, mechanic 1 is the only one that shows the whole field — and you'd be buying that reassurance with legibility.</p>
+      </div>
+    </section>
+
+    <section aria-labelledby="spec-head" data-reveal>
+      <div class="section-head">
+        <h2 id="spec-head">What's already locked</h2>
+        <p>Every mechanic ends on the identical result screen, because these decisions are settled regardless of which one you pick.</p>
+      </div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Button</th><th>Spin outcome</th><th>Visit logged</th><th>Benched</th><th>Then</th></tr></thead>
+          <tbody>
+            <tr><td class="q">We're going!</td><td><code>went</code></td><td>Yes</td><td>Yes</td><td>Done for the night</td></tr>
+            <tr><td class="q">Not tonight</td><td><code>skipped</code></td><td>No</td><td>Yes</td><td>Re-spins immediately</td></tr>
+            <tr><td class="q">Spin again</td><td><code>skipped</code></td><td>No</td><td>No</td><td>Re-spins, excluding this one until you reload</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>Prototype · Date Night Roulette · sample data, no database attached</footer>
+  </div>
+</main>
+
+<script>
+// ===== DATA =====
+var POOL = [
+  {em:'🍝', nm:"Osteria Francescana", sh:'Osteria',   cz:'Italian',        note:'Book two weeks ahead'},
+  {em:'🍣', nm:'Sushi Kaito',         sh:'Kaito',     cz:'Japanese',       note:'Omakase only, eight seats'},
+  {em:'🌮', nm:'La Rosita',           sh:'Rosita',    cz:'Mexican',        note:'Ana swears by the al pastor'},
+  {em:'🍜', nm:'Ramen Bāsu',          sh:'Bāsu',      cz:'Ramen',          note:'Go early — queue starts at seven'},
+  {em:'🥘', nm:'Casa Paella',         sh:'Casa',      cz:'Spanish',        note:'Terrace, if it stays warm'},
+  {em:'🍕', nm:'Forno Vecchio',       sh:'Forno',     cz:'Pizza',          note:'Sourdough base, wood oven'},
+  {em:'🥟', nm:'Golden Dumpling',     sh:'Golden',    cz:'Chinese',        note:'Cash only — bring some'},
+  {em:'🍛', nm:'Saffron & Salt',      sh:'Saffron',   cz:'Indian',         note:'Everyone says get the dosa'},
+  {em:'🥩', nm:'Bistecca',            sh:'Bistecca',  cz:'Steak',          note:'Blowout territory. Payday only'},
+  {em:'🐟', nm:'Blue Anchor',         sh:'Anchor',    cz:'Seafood',        note:"Whatever's on the board"},
+  {em:'🥗', nm:'Verdura',             sh:'Verdura',   cz:'Vegetarian',     note:'Even I liked it'},
+  {em:'🍤', nm:'Bangkok Soi 9',       sh:'Soi 9',     cz:'Thai',           note:'Ask for it properly spicy'},
+  {em:'🫓', nm:'Meze Meze',           sh:'Meze',      cz:'Lebanese',       note:'Best if we bring people'},
+  {em:'🍲', nm:'Phở Hà Nội',          sh:'Phở HN',    cz:'Vietnamese',     note:'Lunch is better than dinner'},
+  {em:'🧆', nm:'Beit Falafel',        sh:'Beit',      cz:'Middle Eastern', note:"Ten minutes' walk, no excuses"},
+  {em:'🥐', nm:'Café Mirabelle',      sh:'Mirabelle', cz:'French',         note:'Do the prix fixe'},
+  {em:'🍖', nm:'Braai Bros',          sh:'Braai',     cz:'Barbecue',       note:'Wear something washable'},
+  {em:'🍚', nm:'Seoul Kitchen',       sh:'Seoul',     cz:'Korean',         note:'The fried chicken. Obviously'},
+  {em:'🦞', nm:'Marisco',             sh:'Marisco',   cz:'Portuguese',     note:'Where we went for the anniversary'},
+  {em:'🍮', nm:'Dolce Notte',         sh:'Dolce',     cz:'Dessert',        note:"Just pudding. That's allowed"}
+];
+var SEG_COLORS = ['#F6B8C4','#FAD2A8','#EFC0D2','#F8DCB4','#E9AEC4','#F6CBA6','#F2C2D0','#FBE0BC'];
+
+// ===== HELPERS =====
+function rint(n) { return Math.floor(Math.random() * n); }
+function pickN(arr, n) {
+  var c = arr.slice(), out = [];
+  for (var i = 0; i < n && c.length; i++) out.push(c.splice(rint(c.length), 1)[0]);
+  return out;
+}
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ===== WHEEL BUILDER =====
+function arcPath(cx, cy, r, a1, a2) {
+  function pt(a) { var t = (a - 90) * Math.PI / 180; return [cx + r * Math.cos(t), cy + r * Math.sin(t)]; }
+  var p1 = pt(a1), p2 = pt(a2), large = (a2 - a1) > 180 ? 1 : 0;
+  return 'M ' + cx + ' ' + cy + ' L ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2) +
+         ' A ' + r + ' ' + r + ' 0 ' + large + ' 1 ' + p2[0].toFixed(2) + ' ' + p2[1].toFixed(2) + ' Z';
+}
+function buildWheel(gEl, items, opts) {
+  var cx = 160, cy = 160, r = 152, n = items.length, seg = 360 / n;
+  var emSize = opts.emSize, txtSize = opts.txtSize, useShort = opts.useShort, rad = opts.labelRadius;
+  var html = '<circle cx="160" cy="160" r="156" fill="none" stroke="rgba(90,40,55,.16)" stroke-width="6"/>';
+  for (var i = 0; i < n; i++) {
+    var a1 = i * seg, a2 = (i + 1) * seg, mid = a1 + seg / 2;
+    html += '<path d="' + arcPath(cx, cy, r, a1, a2) + '" fill="' + SEG_COLORS[i % SEG_COLORS.length] +
+            '" stroke="rgba(255,255,255,.65)" stroke-width="1.2"/>';
+    var flip = (mid > 180 && mid < 360);
+    var base = 'translate(160,160) rotate(' + (mid - 90) + ') translate(' + rad + ',0)';
+    var anchor = 'end';
+    if (flip) { base += ' rotate(180)'; anchor = 'start'; }
+    var label = useShort ? items[i].sh : items[i].nm;
+    html += '<g transform="' + base + '">' +
+              '<text x="0" y="0" text-anchor="' + anchor + '" dominant-baseline="middle" ' +
+                'font-size="' + txtSize + '" font-weight="600" fill="var(--seg-ink)" ' +
+                'font-family="Inter, sans-serif">' + esc(label) + '</text>' +
+              '<g transform="translate(' + (flip ? rad * 0.42 : -rad * 0.42) + ',0)' +
+                (flip ? ' rotate(180)' : '') + '">' +
+                '<text x="0" y="0" text-anchor="middle" dominant-baseline="central" ' +
+                  'font-size="' + emSize + '">' + items[i].em + '</text>' +
+              '</g>' +
+            '</g>';
+  }
+  gEl.innerHTML = html;
+}
+// land segment i under the top pointer
+function targetRotation(current, i, n, turns) {
+  var seg = 360 / n, centre = i * seg + seg / 2;
+  var base = Math.ceil(current / 360) * 360;
+  return base + turns * 360 - centre;
+}
+
+// ===== RESULT SCREEN =====
+function showResult(slot, r, respin) {
+  var host = document.getElementById('res' + slot);
+  host.innerHTML =
+    '<div class="result">' +
+      '<div class="kicker">Tonight you\'re eating</div>' +
+      '<div class="em">' + r.em + '</div>' +
+      '<div class="nm">' + esc(r.nm) + '</div>' +
+      '<div class="cz">' + esc(r.cz) + '</div>' +
+      '<div class="note">' + esc(r.note) + '</div>' +
+      '<div class="btn-row">' +
+        '<button class="btn btn-primary" onclick="commit(' + slot + ",'went'" + ')">We\'re going!</button>' +
+        '<button class="btn btn-ghost" onclick="commit(' + slot + ",'bench'" + ')">Not tonight</button>' +
+        '<button class="btn btn-quiet" onclick="' + respin + '">Spin again</button>' +
+      '</div>' +
+    '</div>';
+}
+function clearResult(slot) { document.getElementById('res' + slot).innerHTML = ''; }
+function commit(slot, kind) {
+  var host = document.getElementById('res' + slot);
+  var msg = kind === 'went' ? '🥂 Logged as a visit — and benched' : '🫶 Benched. Spinning again…';
+  var t = document.createElement('div');
+  t.className = 'toast'; t.textContent = msg;
+  host.querySelector('.result').appendChild(t);
+  setTimeout(function () {
+    clearResult(slot);
+    if (kind === 'bench') { [spinWheelFull, drawFinalists, spinSlot][slot - 1](); }
+  }, 1250);
+}
+
+// ===== MECHANIC 1 =====
+var rot1 = 0, busy1 = false;
+buildWheel(document.getElementById('spin1'), POOL, { emSize: 15, txtSize: 9, useShort: true, labelRadius: 138 });
+function spinWheelFull() {
+  if (busy1) return; busy1 = true; clearResult(1);
+  var btn = document.getElementById('go1'); btn.disabled = true; btn.textContent = 'Spinning…';
+  var i = rint(POOL.length), el = document.getElementById('spin1');
+  rot1 = targetRotation(rot1, i, POOL.length, 6);
+  el.style.transition = 'transform 4.2s cubic-bezier(0.16,0.72,0.14,1)';
+  el.style.transform = 'rotate(' + rot1 + 'deg)';
+  setTimeout(function () {
+    showResult(1, POOL[i], 'spinWheelFull()');
+    btn.disabled = false; btn.textContent = 'Spin the wheel'; busy1 = false;
+  }, 4350);
+}
+
+// ===== MECHANIC 2 =====
+var rot2 = 0, busy2 = false, finalists = [];
+function drawFinalists() {
+  if (busy2) return; busy2 = true; clearResult(2);
+  var btn = document.getElementById('go2'); btn.disabled = true; btn.textContent = 'Drawing…';
+  document.getElementById('note2').textContent = 'Seven drawn from twenty';
+  finalists = pickN(POOL, 7);
+  var chips = document.getElementById('chips2'); chips.innerHTML = '';
+  var el = document.getElementById('spin2');
+  el.style.transition = 'none'; el.style.opacity = '.25';
+  finalists.forEach(function (f, k) {
+    setTimeout(function () {
+      var s = document.createElement('span');
+      s.className = 'fchip'; s.textContent = f.em + ' ' + f.sh;
+      chips.appendChild(s);
+    }, k * 130);
+  });
+  setTimeout(function () {
+    buildWheel(el, finalists, { emSize: 26, txtSize: 13, useShort: true, labelRadius: 132 });
+    el.style.opacity = '1';
+    btn.disabled = false; btn.textContent = 'Spin the seven';
+    btn.setAttribute('onclick', 'spinFinalists()');
+    busy2 = false;
+  }, 7 * 130 + 260);
+}
+function spinFinalists() {
+  if (busy2 || !finalists.length) return; busy2 = true; clearResult(2);
+  var btn = document.getElementById('go2'); btn.disabled = true; btn.textContent = 'Spinning…';
+  var i = rint(finalists.length), el = document.getElementById('spin2');
+  rot2 = targetRotation(rot2, i, finalists.length, 6);
+  el.style.transition = 'transform 4.2s cubic-bezier(0.16,0.72,0.14,1)';
+  el.style.transform = 'rotate(' + rot2 + 'deg)';
+  setTimeout(function () {
+    showResult(2, finalists[i], 'resetFinalists()');
+    btn.disabled = false; btn.textContent = 'Draw seven again';
+    btn.setAttribute('onclick', 'drawFinalists()');
+    busy2 = false;
+  }, 4350);
+}
+function resetFinalists() { clearResult(2); drawFinalists(); }
+
+// ===== MECHANIC 3 =====
+var ITEM_H = 108, busy3 = false;
+function paintReel(items) {
+  document.getElementById('reel3').innerHTML = items.map(function (r) {
+    return '<div class="reel-item"><div class="em">' + r.em + '</div><div class="nm">' + esc(r.nm) + '</div></div>';
+  }).join('');
+}
+paintReel([POOL[3]]);
+function spinSlot() {
+  if (busy3) return; busy3 = true; clearResult(3);
+  var btn = document.getElementById('go3'); btn.disabled = true; btn.textContent = 'Rolling…';
+  var reel = document.getElementById('reel3');
+  var winner = POOL[rint(POOL.length)], strip = [];
+  for (var i = 0; i < 34; i++) strip.push(POOL[rint(POOL.length)]);
+  strip.push(winner);
+  paintReel(strip);
+  reel.style.transition = 'none'; reel.style.transform = 'translateY(0)';
+  reel.classList.add('blur');
+  void reel.offsetHeight;
+  setTimeout(function () {
+    reel.style.transition = 'transform 3.6s cubic-bezier(0.13,0.72,0.12,1)';
+    reel.style.transform = 'translateY(-' + (strip.length - 1) * ITEM_H + 'px)';
+  }, 20);
+  setTimeout(function () { reel.classList.remove('blur'); }, 3000);
+  setTimeout(function () {
+    showResult(3, winner, 'spinSlot()');
+    btn.disabled = false; btn.textContent = 'Roll it'; busy3 = false;
+  }, 3750);
+}
+
+// ===== CHROME =====
+function toggleMenu() { var d = document.getElementById('vizMenuDropdown'); if (d) d.classList.toggle('open'); }
+document.addEventListener('click', function (e) {
+  var d = document.getElementById('vizMenuDropdown');
+  if (d && !e.target.closest('.viz-menu')) d.classList.remove('open');
+});
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') { var d = document.getElementById('vizMenuDropdown'); if (d) d.classList.remove('open'); }
+});
+
+var savedTheme = localStorage.getItem('viz-theme');
+var currentTheme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+function applyTheme(t) {
+  document.documentElement.className = 'theme-' + t;
+  document.getElementById('themeIcon').textContent = t === 'dark' ? '🌙' : '☀️';
+  document.getElementById('themeLabel').textContent = t === 'dark' ? 'Dark' : 'Light';
+  localStorage.setItem('viz-theme', t); currentTheme = t;
+  if (typeof onThemeChange === 'function') onThemeChange();
+}
+function cycleTheme() { applyTheme(currentTheme === 'dark' ? 'light' : 'dark'); }
+function onThemeChange() {}
+applyTheme(currentTheme);
+
+document.querySelectorAll('[data-reveal]').forEach(function (el) { el.classList.add('reveal'); });
+var revealObserver = new IntersectionObserver(function (entries) {
+  entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(function (el) { revealObserver.observe(el); });
+
+async function downloadImage() {
+  var menu = document.querySelector('.viz-menu'); menu.style.display = 'none';
+  try {
+    var url = await htmlToImage.toPng(document.body, { quality: 1, pixelRatio: 2,
+      filter: function (n) { return !n.classList || !n.classList.contains('viz-menu'); } });
+    var a = document.createElement('a'); a.href = url;
+    a.download = document.title.replace(/\s+/g, '-').toLowerCase() + '.png'; a.click();
+  } catch (e) { console.error('Download failed:', e); }
+  menu.style.display = '';
+}
+</script>
+</body>
+</html>

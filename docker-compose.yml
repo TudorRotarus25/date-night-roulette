@@ -1,0 +1,42 @@
+# Local infrastructure for Date Night Roulette.
+#
+# The app talks to its database via @neondatabase/serverless, which speaks
+# Neon's SQL-over-HTTP protocol — not the plain Postgres wire protocol. So a
+# bare Postgres container isn't enough: `neon-proxy` below translates Neon's
+# HTTP protocol into real Postgres queries, letting the app use the exact same
+# driver locally as it does against production Neon. See README.md.
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: main
+    # Published on 5433, not the default 5432, since that's commonly already
+    # taken by another local project's Postgres. The app and neon-proxy talk
+    # to this container over the internal Docker network on 5432 regardless
+    # — this publish is only for optional host-side tools (e.g. `psql`,
+    # a GUI client). `docker compose exec postgres psql -U postgres -d main`
+    # works without it.
+    ports:
+      - '5433:5432'
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d main']
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+  neon-proxy:
+    image: ghcr.io/timowilhelm/local-neon-http-proxy:main
+    environment:
+      PG_CONNECTION_STRING: postgres://postgres:postgres@postgres:5432/main
+    ports:
+      - '4444:4444'
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  db_data:
