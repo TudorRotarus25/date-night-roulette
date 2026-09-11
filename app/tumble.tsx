@@ -149,10 +149,11 @@ export function Tumble({ pool: initialPool }: { pool: PoolRestaurant[] }) {
       return;
     }
 
+    // Benched, but no auto re-roll — back to idle so the next spin is deliberate.
     if (action === "not_tonight") {
       const nextPool = pool.filter((r) => r.id !== id);
       setPool(nextPool);
-      performRoll(nextPool, excludedIds);
+      backToIdle(nextPool);
       return;
     }
 
