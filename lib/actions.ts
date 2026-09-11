@@ -6,14 +6,9 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { restaurants, spins, visits } from "@/db/schema";
 import { requireAuth } from "@/lib/require-auth";
+import { revalidateAll } from "@/lib/revalidate";
 
 export type SpinAction = "went" | "not_tonight" | "again";
-
-function revalidateAll() {
-  revalidatePath("/");
-  revalidatePath("/restaurants");
-  revalidatePath("/benched");
-}
 
 export async function addRestaurant(input: {
   name: string;

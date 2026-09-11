@@ -140,6 +140,24 @@ curl -i -X POST http://localhost:3000/api/intake \
 A successful call inserts a restaurant with `cuisine: "unknown"`, which
 surfaces as a "needs a cuisine" nudge on the spin screen.
 
+`url` may be a bare link or the share sheet's `"<title>\n<link>"` blob — a
+title found there wins, since it needs no guessing. An optional `name` field
+overrides both, and is the only thing that can rescue a link carrying no name
+at all (a dropped pin).
+
+The URL-parsing itself is unit-tested — `pnpm test` — against a table of real
+Google Maps URL shapes. **Add a case there rather than re-deriving one by
+hand**, because the shapes are not obvious. Notably an iOS share resolves to
+`maps.google.com/maps?q=<Name>, <address>&ftid=…` and *never* to the
+`/maps/place/<name>` form a desktop share produces, so the name has to be read
+out of the `q=` parameter and split off its address. A dropped pin instead
+arrives as coordinates, a plus code or DMS, all of which are rejected.
+
+One gotcha if you ever debug the resolver by hand: sending a browser
+`User-Agent` makes Google answer with a `consent.google.com` interstitial
+instead of a redirect. Node's default agent gets the clean chain, so the
+resolver deliberately sets no `User-Agent`.
+
 ## Deploying to Vercel
 
 1. Push this repo to GitHub, then either import it at
@@ -181,6 +199,11 @@ Set this up once **per phone**:
    - Method: `POST`
    - Headers: `X-Intake-Token` → your production `INTAKE_TOKEN`
    - Request Body: JSON → `{ "url": Shortcut Input }`
+   - Optional but worth doing: add a second JSON field `name`, set to the
+     **Name** property of the `Shortcut Input` variable (tap the variable, then
+     pick *Name*). Maps usually hands the place's title over as that property,
+     and using it skips the URL-guessing entirely. Everything works without
+     this — it's just the most reliable source of a name.
 3. Add action **Show Notification** at the end, showing the response — so a
    failure (bad link, wrong token) is never silent.
 4. Optional: in Maps' share sheet, tap **Edit Actions** and pin the shortcut
