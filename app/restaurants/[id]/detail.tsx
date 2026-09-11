@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Restaurant, Visit } from "@/db/schema";
 import { CUISINES, cuisineFor } from "@/lib/cuisines";
@@ -24,8 +25,8 @@ export function RestaurantDetail({
   function handleSave() {
     if (!name.trim()) return;
     startTransition(async () => {
+      // updateRestaurant redirects to /restaurants, so nothing after this runs.
       await updateRestaurant(restaurant.id, { name, cuisine: cuisine || "unknown", note });
-      router.refresh();
     });
   }
 
@@ -49,6 +50,29 @@ export function RestaurantDetail({
   return (
     <main className="flex flex-1 flex-col items-center px-6 py-10">
       <div className="w-full max-w-sm">
+        {/* Standalone PWA mode has no browser chrome, so the way out has to be
+            in the page. A fixed href, not router.back() — you may have arrived
+            here by deep link or redirect, and the pool is always the right exit. */}
+        <Link
+          href="/restaurants"
+          className="text-sm inline-flex items-center gap-1 mb-4"
+          style={{ color: "var(--text-secondary)" }}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.9}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+            style={{ width: 16, height: 16 }}
+          >
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+          The pool
+        </Link>
+
         <div className="text-center mb-6">
           <span className="text-4xl">{cuisineFor(cuisine || restaurant.cuisine).emoji}</span>
           <h1 className="font-display text-2xl font-bold mt-1">{restaurant.name}</h1>

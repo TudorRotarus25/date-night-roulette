@@ -80,6 +80,9 @@ export async function updateRestaurant(
 
   revalidateAll();
   revalidatePath(`/restaurants/${id}`);
+  // Back to the pool. Redirecting here rather than pushing from the client
+  // avoids racing the re-render that revalidating the current route streams back.
+  redirect("/restaurants");
 }
 
 export async function deleteRestaurant(id: string) {

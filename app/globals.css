@@ -126,6 +126,43 @@ a {
   cursor: not-allowed;
 }
 
+/* .btn is a full-width block; this is its square, icon-only sibling. */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition:
+    background 0.16s,
+    color 0.16s;
+}
+.icon-btn:hover {
+  color: var(--accent);
+  background: var(--surface-hover);
+}
+.icon-btn:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+.icon-btn svg {
+  width: 19px;
+  height: 19px;
+}
+.icon-btn[aria-busy="true"] svg {
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* ===== BOTTOM NAV ===== */
 .bottom-nav {
   position: fixed;
