@@ -222,6 +222,43 @@ purpose: Safari's Intelligent Tracking Prevention caps script-written cookies
 at ~7 days, while an HTTP-set cookie can last the full ~400 days configured
 here.
 
+> **iOS bakes the icon and the label at install time.** Deploying a new icon
+> changes nothing on a phone that already has the tile — delete the home-screen
+> icon, hard-reload in Safari, then re-add it.
+
+Two consequences of the standalone install shape the code:
+
+- **`proxy.ts` must leave `icons/` ungated.** On a cold launch, before login,
+  iOS builds the launch screen from the manifest's `background_color` plus a
+  raster icon, fetched from the install's own (empty) cookie jar. Gated, those
+  requests 307 to `/login` and return HTML instead of a PNG.
+- **Outbound links need `target="_blank"`.** Standalone mode has no browser
+  chrome, so an in-place navigation off-origin would trap you with no back
+  button. The "Open in Maps" links hand off to Safari, which offers a
+  "← Date Night" return pill.
+
+### Regenerating the icons
+
+`design/icon-source.png` (1024×1024) is the master. It has transparent rounded
+corners, which iOS composites onto black before applying its *own*, fuller
+squircle mask — so a naive resize leaves dark crescents in the corners. The
+derived icons therefore bleed the artwork's own gradated burgundy outward
+(upscale 130%, centre-crop, blur, composite the crisp original back on top) and
+drop the alpha channel entirely. `sharp` does the resizing; ImageMagick makes
+the multi-size `.ico`, which `sharp` cannot write:
+
+| File | Size | Used for |
+|---|---|---|
+| `public/icons/apple-touch-icon.png` | 180×180 | iOS home screen (60pt @3x) |
+| `public/icons/icon-192.png` | 192×192 | manifest — also the launch-screen raster |
+| `public/icons/icon-512.png` | 512×512 | manifest, large contexts |
+| `public/icons/icon-32.png` | 32×32 | browser tab |
+| `app/favicon.ico` | 48/32/16 | legacy tab icon |
+
+Every output must be fully opaque — verify with
+`magick identify -format "%f %[channels]\n" public/icons/*.png` and confirm no
+`tRNS` chunk is present.
+
 ## Environment variables
 
 | Variable | Purpose | Local default | Production |
@@ -246,6 +283,8 @@ app/
 db/                         # Drizzle schema + client
 lib/                        # auth, cuisines list, Maps-link resolver, server actions
 proxy.ts                    # auth gate (Next's middleware equivalent)
+public/icons/               # home-screen + tab icons, generated from design/icon-source.png
+design/icon-source.png      # 1024px icon master — see "Regenerating the icons"
 design/spin-mechanics.html  # prototype of the three spin mechanics considered
 CONTEXT.md                  # domain glossary — read this before changing behaviour
 ```

@@ -55,6 +55,16 @@ body::before {
   padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom));
 }
 
+/* Installed on a home screen, the status bar is black-translucent: the page
+   draws underneath the clock and the notch. The 44px floor is deliberate —
+   env(safe-area-inset-top) intermittently reports 0 in iOS standalone, and
+   without a floor that would tuck the page heading under the Dynamic Island. */
+@media (display-mode: standalone) {
+  #app-root {
+    padding-top: max(env(safe-area-inset-top), 44px);
+  }
+}
+
 h1,
 h2,
 h3,

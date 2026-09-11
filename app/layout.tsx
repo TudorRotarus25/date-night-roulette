@@ -18,13 +18,20 @@ export const metadata: Metadata = {
   title: "Date Night Roulette",
   description: "Spin to decide where we're eating tonight.",
   icons: {
-    icon: "/icon.svg",
-    apple: "/icon.svg",
+    icon: [
+      { url: "/icons/icon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    // iOS ignores SVG touch icons — this must stay a raster.
+    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
-    title: "Date Night Roulette",
+    // Lets the dark background run up under the clock; see the safe-area-inset-top
+    // rule in globals.css, which keeps content clear of the notch.
+    statusBarStyle: "black-translucent",
+    // iOS elides the home-screen label at ~12 characters.
+    title: "Date Night",
   },
 };
 
