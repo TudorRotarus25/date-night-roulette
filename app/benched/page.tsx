@@ -44,16 +44,12 @@ export default async function BenchedPage() {
               const cuisine = cuisineFor(r.cuisine);
               const s = stats.get(r.id)!;
               return (
-                <li
-                  key={r.id}
-                  className="flex items-center gap-3 rounded-[14px] border px-4 py-3"
-                  style={{ background: "var(--surface)", borderColor: "var(--border)" }}
-                >
+                <li key={r.id} className="row">
                   <Link href={`/restaurants/${r.id}`} className="flex items-center gap-3 flex-1 min-w-0">
-                    <span className="text-2xl">{cuisine.emoji}</span>
-                    <span className="flex-1 min-w-0">
-                      <span className="block font-semibold truncate">{r.name}</span>
-                      <span className="block text-xs" style={{ color: "var(--text-secondary)" }}>
+                    <span className="row-em">{cuisine.emoji}</span>
+                    <span className="row-body">
+                      <span className="row-nm">{r.name}</span>
+                      <span className="row-sub">
                         {s.count === 0
                           ? "Never been"
                           : `${s.count} visit${s.count === 1 ? "" : "s"} · last ${s.lastVisitedAt!.toLocaleDateString()}`}
@@ -70,12 +66,6 @@ export default async function BenchedPage() {
             })}
           </ul>
         )}
-
-        <div className="flex justify-center gap-5 text-sm mt-8" style={{ color: "var(--text-secondary)" }}>
-          <Link href="/">← Spin</Link>
-          <Link href="/add">Add</Link>
-          <Link href="/restaurants">Pool</Link>
-        </div>
       </div>
     </main>
   );

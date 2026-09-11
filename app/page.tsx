@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { restaurants } from "@/db/schema";
 import { Tumble } from "./tumble";
+import { Today } from "./today";
 
 export const dynamic = "force-dynamic";
 
@@ -14,10 +15,12 @@ export default async function Home() {
   return (
     <main className="flex flex-1 flex-col items-center px-6 py-10 gap-2">
       <header className="text-center mb-2">
-        <h1 className="font-display text-2xl font-bold">Date Night Roulette</h1>
-        <p className="text-sm mt-1" style={{ color: "var(--text-secondary)" }}>
-          {pool.length === 0 ? "The pool is empty" : `${pool.length} in the pool`}
-        </p>
+        <Today />
+        <h1 className="font-display home-question">
+          Where are we
+          <br />
+          eating tonight?
+        </h1>
       </header>
 
       {needsCuisine && (
@@ -48,12 +51,6 @@ export default async function Home() {
           <Tumble pool={pool} />
         )}
       </div>
-
-      <nav className="flex gap-5 text-sm mt-6" style={{ color: "var(--text-secondary)" }}>
-        <Link href="/add">Add</Link>
-        <Link href="/restaurants">Pool</Link>
-        <Link href="/benched">Benched</Link>
-      </nav>
     </main>
   );
 }

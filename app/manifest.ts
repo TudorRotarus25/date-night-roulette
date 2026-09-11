@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "Spin to decide where we're eating tonight.",
     start_url: "/",
     display: "standalone",
-    background_color: "#fff7f4",
-    theme_color: "#d6455f",
+    background_color: "#130e1f",
+    theme_color: "#130e1f",
     icons: [
       {
         src: "/icon.svg",

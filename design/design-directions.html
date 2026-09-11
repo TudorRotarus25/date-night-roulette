@@ -1,0 +1,1137 @@
+<title>Design Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
+
+<style>
+/* ============================================================
+   PAGE CHROME TOKENS  (the comparison page itself)
+   The phone frames below override these locally per palette.
+   ============================================================ */
+:root {
+  --bg: #FAFAF9;
+  --surface: #FFFFFF;
+  --surface-hover: #F4F4F2;
+  --border: rgba(15, 23, 42, 0.10);
+  --text: #0F172A;
+  --text-secondary: #5B6474;
+  --accent: #D6455F;
+  --accent-secondary: #E07B3C;
+  --positive: #2F8F6B;
+  --negative: #D6455F;
+  --warning: #C77B22;
+}
+.theme-light {
+  --bg: #FAFAF9;
+  --surface: #FFFFFF;
+  --surface-hover: #F4F4F2;
+  --border: rgba(15, 23, 42, 0.10);
+  --text: #0F172A;
+  --text-secondary: #5B6474;
+  --accent: #D6455F;
+  --accent-secondary: #E07B3C;
+  --positive: #2F8F6B;
+  --negative: #D6455F;
+  --warning: #C77B22;
+}
+.theme-dark {
+  --bg: #0A0A0A;
+  --surface: #161618;
+  --surface-hover: #202024;
+  --border: rgba(255, 255, 255, 0.12);
+  --text: #EDEDED;
+  --text-secondary: #9A9AA4;
+  --accent: #FF6B85;
+  --accent-secondary: #FFA45C;
+  --positive: #4ECFA0;
+  --negative: #FF6B85;
+  --warning: #F0B45E;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+  padding: 0;
+}
+
+.wrap { max-width: 1240px; margin: 0 auto; padding-block: 56px 96px; padding-left: 24px; padding-right: 24px; }
+
+h1 { font-size: 3rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1.04; margin: 0 0 14px; }
+h2 { font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; margin: 0 0 10px; }
+h3 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; margin: 0 0 8px; }
+p { margin: 0 0 12px; }
+.lede { font-size: 1.0625rem; color: var(--text-secondary); max-width: 62ch; }
+
+section { margin-bottom: 88px; }
+.sec-head { margin-bottom: 32px; }
+.eyebrow {
+  font-size: 0.75rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 10px;
+}
+
+/* ---- problem chips ---- */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.chip {
+  font-size: 0.8125rem; font-weight: 500; padding: 7px 13px; border-radius: 999px;
+  background: var(--surface); border: 1px solid var(--border); color: var(--text-secondary);
+}
+.chip b { color: var(--text); font-weight: 600; }
+
+/* ---- the grid of phones ---- */
+.frames {
+  display: grid;
+  gap: 28px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  align-items: start;
+}
+.frames.two { grid-template-columns: repeat(auto-fit, minmax(320px, 420px)); }
+
+.opt { min-width: 0; }
+.opt-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; flex-wrap: wrap; }
+.opt-name { font-size: 1.125rem; font-weight: 700; letter-spacing: -0.02em; }
+.opt-tag {
+  font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent);
+  padding: 3px 8px; border-radius: 999px;
+}
+.opt-tag.warn { color: var(--warning); background: color-mix(in srgb, var(--warning) 14%, transparent); }
+.opt-why { font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 16px; min-height: 3.2em; }
+
+/* ============================================================
+   PHONE FRAME
+   ============================================================ */
+.phone {
+  width: 100%; max-width: 340px; height: 652px;
+  border-radius: 38px; border: 1px solid var(--border);
+  background: var(--bg);
+  position: relative; overflow: hidden;
+  box-shadow: 0 18px 44px -18px rgba(15, 23, 42, 0.30), 0 2px 6px rgba(15, 23, 42, 0.06);
+  font-family: Inter, sans-serif;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  isolation: isolate;
+}
+.theme-dark .phone { box-shadow: 0 18px 44px -18px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255,255,255,0.04); }
+
+/* the app's own body::before glow, recreated */
+.phone::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(420px 240px at 12% -6%, var(--glow), transparent 62%),
+    radial-gradient(380px 230px at 92% 4%, color-mix(in srgb, var(--accent-secondary) 22%, transparent), transparent 60%);
+}
+
+.statusbar {
+  position: relative; z-index: 3;
+  height: 34px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 22px; font-size: 11px; font-weight: 600; color: var(--text-secondary);
+}
+.statusbar .dots { display: flex; gap: 3px; align-items: center; }
+.statusbar .dots i { width: 4px; height: 4px; border-radius: 50%; background: currentColor; display: block; }
+
+.screen {
+  position: absolute; inset: 34px 0 0 0; z-index: 1;
+  display: flex; flex-direction: column;
+  overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: thin;
+}
+.screen::-webkit-scrollbar { width: 4px; }
+.screen::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.scr-pad { padding: 20px 22px 28px; }
+
+/* ---- app typography inside the phone ---- */
+.kicker {
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--accent);
+}
+.display {
+  font-family: Fraunces, Georgia, serif; font-weight: 700;
+  letter-spacing: -0.03em; line-height: 1.08; color: var(--text);
+}
+.muted { color: var(--text-secondary); }
+
+/* ---- app buttons ---- */
+.abtn {
+  font-family: inherit; font-size: 15px; font-weight: 600; border-radius: 14px;
+  padding: 14px 18px; cursor: pointer; border: 1px solid transparent; width: 100%;
+  transition: background .18s, box-shadow .18s, color .18s, transform .18s;
+  letter-spacing: -0.01em;
+}
+.abtn-primary { background: var(--accent); color: #fff; box-shadow: 0 6px 16px var(--glow); }
+.abtn-primary:hover { background: color-mix(in srgb, var(--accent) 86%, #000); }
+.abtn-ghost { background: var(--surface-hover); color: var(--text); border-color: var(--border); }
+.abtn-quiet { background: transparent; color: var(--text-secondary); }
+.abtn:disabled { opacity: .45; cursor: not-allowed; }
+.abtn-row { display: flex; flex-direction: column; gap: 9px; width: 100%; margin-top: 16px; }
+
+/* ---- slot machine ---- */
+.slot {
+  width: 100%; height: 252px; border-radius: 24px; overflow: hidden; position: relative;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 9%, var(--surface)), var(--surface));
+  border: 1px solid var(--border);
+  box-shadow: inset 0 0 40px color-mix(in srgb, var(--text) 8%, transparent);
+}
+.slot::before, .slot::after {
+  content: ""; position: absolute; left: 0; right: 0; height: 76px; z-index: 2; pointer-events: none;
+}
+.slot::before { top: 0; background: linear-gradient(180deg, var(--surface) 6%, transparent); }
+.slot::after { bottom: 0; background: linear-gradient(0deg, var(--surface) 6%, transparent); }
+.slot-window {
+  position: absolute; top: 50%; left: 11px; right: 11px; height: 88px;
+  transform: translateY(-50%);
+  border-top: 2px solid var(--accent); border-bottom: 2px solid var(--accent);
+  z-index: 3; pointer-events: none; border-radius: 4px;
+}
+.reel { position: absolute; top: 50%; left: 0; right: 0; margin-top: -44px; }
+.reel-item {
+  height: 88px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px; text-align: center; padding: 0 14px;
+}
+.reel-item .em { font-size: 34px; line-height: 1; }
+.reel-item .nm {
+  font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden;
+  text-overflow: ellipsis; max-width: 100%;
+}
+.reel.blur .reel-item { filter: blur(2.2px); }
+.reel.drifting { animation: drift 16s linear infinite; }
+@keyframes drift { from { transform: translateY(0); } to { transform: translateY(-264px); } }
+
+.pool-note { font-size: 11.5px; color: var(--text-secondary); text-align: center; margin-top: 11px; }
+
+/* ---- fanned deck ---- */
+.fan { height: 252px; display: flex; align-items: center; justify-content: center; position: relative; }
+.fan-card {
+  position: absolute; width: 118px; height: 158px; border-radius: 18px;
+  background: var(--surface); border: 1px solid var(--border);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  box-shadow: 0 12px 28px -10px var(--glow);
+  transition: transform .45s cubic-bezier(.34,1.4,.64,1);
+}
+.fan-card .em { font-size: 40px; line-height: 1; }
+.fan-card .nm {
+  font-size: 10.5px; font-weight: 600; text-align: center; padding: 0 10px;
+  color: var(--text-secondary); line-height: 1.25;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.fan-card:nth-child(1) { transform: rotate(-13deg) translate(-58px, 8px); }
+.fan-card:nth-child(2) { transform: rotate(0deg) translateY(-10px); z-index: 2; }
+.fan-card:nth-child(3) { transform: rotate(13deg) translate(58px, 8px); }
+.fan.collapsed .fan-card { transform: rotate(0) translate(0, 0) scale(.92); opacity: .35; }
+
+/* ---- type-led stats ---- */
+.statline {
+  display: flex; align-items: center; gap: 14px; padding: 14px 0;
+  border-top: 1px solid var(--border);
+}
+.statline .big { font-family: Fraunces, serif; font-size: 30px; font-weight: 700; line-height: 1; min-width: 46px; }
+.statline .em { font-size: 26px; line-height: 1; min-width: 46px; text-align: center; }
+.statline .lbl { font-size: 12.5px; color: var(--text-secondary); line-height: 1.35; }
+.statline .lbl b { color: var(--text); font-weight: 600; display: block; }
+
+/* ---- result card ---- */
+.result { text-align: center; display: flex; flex-direction: column; align-items: center; }
+.result .rem { font-size: 62px; line-height: 1; margin: 12px 0 6px; animation: bounceIn .55s cubic-bezier(.34,1.56,.64,1) both .08s; }
+@keyframes bounceIn { from { opacity: 0; transform: scale(.4) rotate(-14deg); } to { opacity: 1; transform: none; } }
+.result .rnm { font-family: Fraunces, serif; font-size: 22px; font-weight: 700; line-height: 1.14; }
+.result .rcz { font-size: 11.5px; font-weight: 600; color: var(--text-secondary); margin-top: 6px; text-transform: uppercase; letter-spacing: .1em; }
+
+/* ---- list rows ---- */
+.row {
+  display: flex; align-items: center; gap: 12px; border-radius: 14px;
+  border: 1px solid var(--border); background: var(--surface);
+  padding: 11px 14px; margin-bottom: 8px; text-decoration: none; color: inherit;
+}
+.row .em { font-size: 22px; line-height: 1; }
+.row .body { flex: 1; min-width: 0; }
+.row .nm { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row .sub { font-size: 11px; color: var(--text-secondary); }
+.row .pill {
+  font-size: 11.5px; font-weight: 600; padding: 7px 12px; border-radius: 10px;
+  background: var(--surface-hover); border: 1px solid var(--border); color: var(--text); white-space: nowrap;
+}
+
+/* ============================================================
+   NAV VARIANTS  (pinned inside the phone)
+   ============================================================ */
+.navbar {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 5;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid var(--border);
+}
+.navbar .tabs { display: flex; height: 62px; padding: 0 6px 4px; }
+.navtab {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; border: 0; background: transparent; cursor: pointer;
+  color: var(--text-secondary); font-family: inherit; font-size: 10.5px; font-weight: 600;
+  letter-spacing: -0.01em; border-radius: 14px; margin: 5px 2px; padding: 0;
+  transition: color .16s, background .16s;
+}
+.navtab svg { width: 21px; height: 21px; stroke-width: 1.9; }
+.navtab:hover { color: var(--text); }
+.navtab.on { color: var(--accent); background: color-mix(in srgb, var(--accent) 13%, transparent); }
+
+/* variant B: 3 tabs + raised FAB */
+.navbar.fab .tabs { padding: 0 6px 4px; }
+.navbar.fab .spacer { width: 62px; flex: 0 0 62px; }
+.fabbtn {
+  position: absolute; left: 50%; top: -22px; transform: translateX(-50%);
+  width: 54px; height: 54px; border-radius: 50%; border: 0; cursor: pointer;
+  background: var(--accent); color: #fff;
+  box-shadow: 0 8px 22px var(--glow), 0 0 0 5px var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .16s;
+}
+.fabbtn:hover { transform: translateX(-50%) scale(1.06); }
+.fabbtn svg { width: 26px; height: 26px; stroke-width: 2.2; }
+
+/* variant C: floating pill */
+.navbar.pill {
+  left: 14px; right: 14px; bottom: 14px;
+  border-radius: 22px; border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  box-shadow: 0 12px 30px -10px rgba(0,0,0,.35);
+}
+.navbar.pill .tabs { height: 56px; padding: 0 4px; }
+.navbar.pill .navtab { font-size: 9.5px; margin: 5px 1px; }
+.navbar.pill .navtab svg { width: 19px; height: 19px; }
+
+/* the CURRENT, broken nav: plain text links in normal flow */
+.oldnav {
+  display: flex; justify-content: center; gap: 20px; font-size: 13px;
+  margin-top: 32px; color: var(--text-secondary);
+}
+.oldnav span { cursor: default; }
+
+/* ---- annotation callout pinned over a frame ---- */
+.note-flag {
+  position: absolute; z-index: 6; left: 12px; right: 12px;
+  font-size: 11px; font-weight: 600; line-height: 1.35;
+  background: var(--warning); color: #1a1205;
+  padding: 8px 11px; border-radius: 10px;
+  box-shadow: 0 6px 18px -6px rgba(0,0,0,.5);
+}
+
+/* ============================================================
+   PALETTES  —  scoped to a frame
+   ============================================================ */
+.pal-candlelit {
+  --bg: #150F13; --surface: #21171C; --surface-hover: #2D2028;
+  --border: rgba(255,225,232,.10); --text: #F7EAEE; --text-secondary: #AC8B95;
+  --accent: #FF6B85; --accent-secondary: #FFA45C; --glow: rgba(255,107,133,.22);
+}
+.pal-blush {
+  --bg: #FFF7F4; --surface: #FFFFFF; --surface-hover: #FFF0EB;
+  --border: rgba(90,40,55,.10); --text: #2C161E; --text-secondary: #8A6A74;
+  --accent: #D6455F; --accent-secondary: #E07B3C; --glow: rgba(214,69,95,.18);
+}
+.pal-berry {
+  --bg: #130E1F; --surface: #1D1730; --surface-hover: #282041;
+  --border: rgba(237,233,247,.10); --text: #EDE9F7; --text-secondary: #9B92B8;
+  --accent: #F0568F; --accent-secondary: #8B5CF6; --glow: rgba(240,86,143,.24);
+}
+/* the two faces the app has TODAY */
+.pal-now-light {
+  --bg: #fff7f4; --surface: #ffffff; --surface-hover: #fff0eb;
+  --border: rgba(90,40,55,.1); --text: #2c161e; --text-secondary: #8a6a74;
+  --accent: #d6455f; --accent-secondary: #e07b3c; --glow: rgba(214,69,95,.18);
+}
+.pal-now-dark {
+  --bg: #140e11; --surface: #1f1519; --surface-hover: #2b1e23;
+  --border: rgba(255,225,232,.09); --text: #f6e9ec; --text-secondary: #aa8b94;
+  --accent: #ff6b85; --accent-secondary: #ffa45c; --glow: rgba(255,107,133,.22);
+}
+
+/* ---- swatch strip ---- */
+.swatches { display: flex; gap: 0; margin-top: 16px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+.sw { flex: 1; height: 46px; position: relative; }
+.sw span {
+  position: absolute; bottom: 4px; left: 0; right: 0; text-align: center;
+  font-size: 8.5px; font-weight: 700; letter-spacing: .02em; opacity: .85;
+}
+.tokens { margin-top: 12px; font-size: 11.5px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--text-secondary); line-height: 1.7; }
+.tokens b { color: var(--text); font-weight: 600; }
+
+/* ---- pick control ---- */
+.pick {
+  display: flex; align-items: center; gap: 10px; margin-top: 16px; cursor: pointer;
+  font-size: 0.875rem; font-weight: 600; color: var(--text-secondary);
+  padding: 11px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface);
+  transition: border-color .16s, color .16s, background .16s;
+  user-select: none;
+}
+.pick:hover { color: var(--text); border-color: color-mix(in srgb, var(--accent) 40%, var(--border)); }
+.pick input { appearance: none; margin: 0; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border); flex: 0 0 18px; transition: border-color .16s, box-shadow .16s; }
+.pick input:checked { border-color: var(--accent); box-shadow: inset 0 0 0 4px var(--accent); }
+.pick:has(input:checked) { color: var(--text); border-color: var(--accent); background: color-mix(in srgb, var(--accent) 7%, var(--surface)); }
+.pick input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---- palette switcher + toolbar ---- */
+.toolbar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+  padding: 14px 16px; border-radius: 14px; background: var(--surface);
+  border: 1px solid var(--border); margin-bottom: 28px;
+}
+.toolbar .tl {
+  font-size: 0.6875rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--text-secondary); margin-right: 4px;
+}
+.pbtn {
+  font-family: inherit; font-size: 0.8125rem; font-weight: 600; cursor: pointer;
+  padding: 8px 14px; border-radius: 999px; border: 1px solid var(--border);
+  background: transparent; color: var(--text-secondary);
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: color .16s, border-color .16s, background .16s;
+}
+.pbtn:hover { color: var(--text); }
+.pbtn .dot { width: 11px; height: 11px; border-radius: 50%; display: block; }
+.pbtn.on { color: var(--text); border-color: var(--accent); background: color-mix(in srgb, var(--accent) 9%, transparent); }
+
+/* ---- summary ---- */
+.summary {
+  border-radius: 18px; border: 1px solid var(--border); background: var(--surface);
+  padding: 32px; display: grid; gap: 22px;
+}
+.sumrow { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.sumrow:last-of-type { border-bottom: 0; padding-bottom: 0; }
+.sumlabel { font-size: 0.6875rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--text-secondary); min-width: 132px; }
+.sumval { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
+.sumval.empty { color: var(--text-secondary); font-weight: 500; font-style: italic; }
+.copybtn {
+  font-family: inherit; font-size: 0.9375rem; font-weight: 600; cursor: pointer;
+  padding: 14px 22px; border-radius: 12px; border: 0;
+  background: var(--accent); color: #fff; justify-self: start;
+  transition: background .16s, transform .16s;
+}
+.copybtn:hover { background: color-mix(in srgb, var(--accent) 86%, #000); }
+.copybtn:active { transform: translateY(1px); }
+
+/* ============================================================
+   UTILITY MENU
+   ============================================================ */
+.viz-menu { position: fixed; top: 18px; right: 18px; z-index: 9999; }
+.viz-menu-toggle {
+  width: 42px; height: 42px; border-radius: 12px; cursor: pointer;
+  background: var(--surface); border: 1px solid var(--border); color: var(--text);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 14px -4px rgba(0,0,0,.2);
+}
+.viz-menu-toggle svg { width: 19px; height: 19px; }
+.viz-menu-dropdown {
+  position: absolute; top: 50px; right: 0; min-width: 208px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+  padding: 6px; display: none; box-shadow: 0 12px 32px -8px rgba(0,0,0,.28);
+}
+.viz-menu-dropdown.open { display: block; }
+.viz-menu-dropdown button {
+  width: 100%; text-align: left; font-family: inherit; font-size: 0.875rem; font-weight: 500;
+  padding: 10px 12px; border: 0; background: transparent; color: var(--text);
+  border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px;
+}
+.viz-menu-dropdown button:hover { background: var(--surface-hover); }
+.viz-menu-dropdown button svg { width: 16px; height: 16px; flex: 0 0 16px; }
+
+.skip {
+  position: absolute; left: -9999px; top: 0;
+  background: var(--accent); color: #fff; padding: 12px 18px; border-radius: 0 0 8px 0;
+  z-index: 10000; font-weight: 600; text-decoration: none;
+}
+.skip:focus { left: 0; }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* ============================================================
+   ENTRANCE ANIMATIONS
+   ============================================================ */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+.animate { animation: fadeInUp .55s cubic-bezier(.22,.85,.3,1) both; }
+.delay-1 { animation-delay: .06s; }
+.delay-2 { animation-delay: .12s; }
+.delay-3 { animation-delay: .18s; }
+.delay-4 { animation-delay: .24s; }
+
+[data-reveal] { opacity: 0; transform: translateY(22px); transition: opacity .6s ease, transform .6s cubic-bezier(.22,.85,.3,1); }
+[data-reveal].in { opacity: 1; transform: none; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px) {
+  .wrap { padding-block: 40px 72px; }
+  h1 { font-size: 2.5rem; }
+  .phone { max-width: 100%; }
+}
+@media (max-width: 420px) {
+  .frames { grid-template-columns: 1fr; gap: 22px; }
+  .summary { padding: 22px; }
+  .sumlabel { min-width: 0; }
+}
+@media (max-width: 375px) {
+  body { overflow-x: hidden; }
+  h1 { font-size: 2.5rem; }
+  .phone { height: 600px; }
+}
+
+/* ============================================================
+   PRINT
+   ============================================================ */
+@media print {
+  @page { margin: 14mm; }
+  .viz-menu, .toolbar, .pick, .copybtn, .skip { display: none !important; }
+  body { background: #fff; color: #000; }
+  .phone { box-shadow: none; break-inside: avoid; height: 560px; }
+  section { break-inside: avoid; margin-bottom: 32px; }
+  [data-reveal] { opacity: 1 !important; transform: none !important; }
+  .frames { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+  [data-reveal] { opacity: 1 !important; transform: none !important; }
+  .reel.drifting { animation: none !important; }
+}
+</style>
+
+<a class="skip" href="#main-content">Skip to content</a>
+
+<div class="viz-menu">
+  <button class="viz-menu-toggle" onclick="toggleMenu()" aria-label="Open utilities menu" aria-haspopup="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
+  <div class="viz-menu-dropdown" id="vizMenuDropdown" role="menu">
+    <button onclick="cycleTheme()" role="menuitem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>
+      Page theme
+    </button>
+    <button onclick="downloadImage()" role="menuitem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      Download PNG
+    </button>
+    <button onclick="window.print()" role="menuitem">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5h20v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg>
+      Print / PDF
+    </button>
+  </div>
+</div>
+
+<main id="main-content" class="wrap" role="main">
+
+  <header class="animate" role="banner">
+    <div class="eyebrow">Date Night Roulette</div>
+    <h1>Four changes,<br>side by side.</h1>
+    <p class="lede">Every phone below is live — the reels actually spin, the nav tabs actually switch screens, and all three restaurants are the real contents of your pool. Pick one option per section; the summary at the bottom collects your answers.</p>
+    <div class="chips">
+      <span class="chip"><b>1.</b> One theme, every device</span>
+      <span class="chip"><b>2.</b> A home screen without the dice</span>
+      <span class="chip"><b>3.</b> Nav pinned to the bottom</span>
+      <span class="chip"><b>4.</b> Nav that's bigger and clearer</span>
+    </div>
+  </header>
+
+  <!-- ========== SECTION 1: THE PROBLEM ========== -->
+  <section data-reveal style="margin-top:80px">
+    <div class="sec-head">
+      <div class="eyebrow">Where we're starting</div>
+      <h2>This is what your phone decides for you</h2>
+      <p class="lede">Same app, same build — the only difference is the OS appearance setting. These two are what you get today, and you don't choose which. The nav is also visible here doing the thing you described: it sits wherever the content ends.</p>
+    </div>
+    <div class="frames two" id="nowFrames"></div>
+  </section>
+
+  <!-- ========== SECTION 2: PALETTES ========== -->
+  <section data-reveal>
+    <div class="sec-head">
+      <div class="eyebrow">Change 1 &middot; One fixed theme</div>
+      <h2>Pick a palette</h2>
+      <p class="lede">Locked in for everyone, on every device. All three keep the two-radial-gradient glow you liked — what changes is the ground it sits on and how hot the accent runs.</p>
+    </div>
+    <div class="frames" id="paletteFrames"></div>
+  </section>
+
+  <!-- ========== SECTION 3: HOME SCREEN ========== -->
+  <section data-reveal>
+    <div class="sec-head">
+      <div class="eyebrow">Change 2 &middot; The pre-roll home screen</div>
+      <h2>Pick a home screen</h2>
+      <p class="lede">The 🎲 is gone in all three — it was a hardcoded placeholder sitting in the reel until you first rolled. Hit <b>Roll it</b> in any frame to see how each one hands off into the spin.</p>
+    </div>
+    <div class="toolbar">
+      <span class="tl">Preview in</span>
+      <button class="pbtn on" data-pal="candlelit" onclick="setPalette('candlelit')"><span class="dot" style="background:#FF6B85"></span>Candlelit</button>
+      <button class="pbtn" data-pal="blush" onclick="setPalette('blush')"><span class="dot" style="background:#D6455F"></span>Blush</button>
+      <button class="pbtn" data-pal="berry" onclick="setPalette('berry')"><span class="dot" style="background:#F0568F"></span>Berry</button>
+    </div>
+    <div class="frames" id="homeFrames"></div>
+  </section>
+
+  <!-- ========== SECTION 4: NAV ========== -->
+  <section data-reveal>
+    <div class="sec-head">
+      <div class="eyebrow">Changes 3 &amp; 4 &middot; The bottom navigation</div>
+      <h2>Pick a nav bar</h2>
+      <p class="lede">All three are pinned to the bottom of the screen, sit above a blurred backdrop, and respect the iPhone home-indicator inset. Tap the tabs — they really navigate. Toggle a longer pool to check the bar holds its position either way.</p>
+    </div>
+    <div class="toolbar">
+      <span class="tl">Pool length</span>
+      <button class="pbtn on" data-len="3" onclick="setLen(3)">Your real 3</button>
+      <button class="pbtn" data-len="12" onclick="setLen(12)">12 (simulated)</button>
+    </div>
+    <div class="frames" id="navFrames"></div>
+  </section>
+
+  <!-- ========== SECTION 5: SUMMARY ========== -->
+  <section data-reveal>
+    <div class="sec-head">
+      <div class="eyebrow">Your answer</div>
+      <h2>What you picked</h2>
+    </div>
+    <div class="summary">
+      <div class="sumrow">
+        <span class="sumlabel">Palette</span>
+        <span class="sumval empty" id="sumPalette">nothing picked yet</span>
+      </div>
+      <div class="sumrow">
+        <span class="sumlabel">Home screen</span>
+        <span class="sumval empty" id="sumHome">nothing picked yet</span>
+      </div>
+      <div class="sumrow">
+        <span class="sumlabel">Nav bar</span>
+        <span class="sumval empty" id="sumNav">nothing picked yet</span>
+      </div>
+      <button class="copybtn" onclick="copyPicks()" id="copyBtn">Copy my picks</button>
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* ============================================================
+   REAL DATA — queried from your local `main` database
+   ============================================================ */
+var POOL = [
+  { name: "Mr.Dawalter | Dos de Maig", cuisine: "Venezuelan", em: "🌽", visits: 1, last: "5 Sep" },
+  { name: "Ramen-ya Hiro - Restaurant Japonés", cuisine: "Ramen", em: "🍜", visits: 0, last: null },
+  { name: "Tío Papelón", cuisine: "Venezuelan", em: "🌽", visits: 0, last: null }
+];
+
+/* extra rows only used by the "12 (simulated)" toggle, drawn from lib/cuisines.ts */
+var FILLER = [
+  { name: "— another Italian place", cuisine: "Italian", em: "🍝" },
+  { name: "— another pizzeria", cuisine: "Pizza", em: "🍕" },
+  { name: "— another sushi bar", cuisine: "Japanese", em: "🍣" },
+  { name: "— another taqueria", cuisine: "Mexican", em: "🌮" },
+  { name: "— another tapas bar", cuisine: "Spanish", em: "🥘" },
+  { name: "— another curry house", cuisine: "Indian", em: "🍛" },
+  { name: "— another bistro", cuisine: "French", em: "🥐" },
+  { name: "— another steakhouse", cuisine: "Steak", em: "🥩" },
+  { name: "— another bar de barri", cuisine: "Catalan", em: "🍅" }
+];
+
+var TODAY_KICKER = "FRIDAY · 11 SEPTEMBER";
+
+var PALETTES = {
+  candlelit: { cls: "pal-candlelit", name: "Candlelit dark",
+    toks: [["--bg","#150F13"],["--surface","#21171C"],["--text","#F7EAEE"],["--accent","#FF6B85"],["--accent-secondary","#FFA45C"]] },
+  blush: { cls: "pal-blush", name: "Warm blush light",
+    toks: [["--bg","#FFF7F4"],["--surface","#FFFFFF"],["--text","#2C161E"],["--accent","#D6455F"],["--accent-secondary","#E07B3C"]] },
+  berry: { cls: "pal-berry", name: "Midnight berry",
+    toks: [["--bg","#130E1F"],["--surface","#1D1730"],["--text","#EDE9F7"],["--accent","#F0568F"],["--accent-secondary","#8B5CF6"]] }
+};
+
+var HOME_NAMES = { live: "Live pool preview", fan: "Fanned card deck", type: "Type-led, no frame" };
+var NAV_NAMES = { tabs: "4 icon + label tabs", fab: "3 tabs + raised Add", pill: "Floating segmented pill" };
+
+var activePalette = "candlelit";
+var activeLen = 3;
+var picks = { palette: null, home: null, nav: null };
+var ITEM_H = 88;
+
+/* ---------- icons ---------- */
+function icon(n) {
+  var p = {
+    spin: '<path d="M21 12a9 9 0 1 1-3.4-7.05"/><path d="M21 3v6h-6"/>',
+    pool: '<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1.2"/><circle cx="3.5" cy="12" r="1.2"/><circle cx="3.5" cy="18" r="1.2"/>',
+    add: '<path d="M12 5v14M5 12h14"/>',
+    bench: '<circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/>'
+  }[n];
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>';
+}
+
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+/* ---------- shared pieces ---------- */
+function statusbar() {
+  return '<div class="statusbar"><span>9:41</span><span class="dots"><i></i><i></i><i></i></span></div>';
+}
+
+function reelStrip(items, drifting) {
+  var h = "";
+  for (var i = 0; i < items.length; i++) {
+    h += '<div class="reel-item"><div class="em">' + items[i].em + '</div><div class="nm">' + esc(items[i].name) + '</div></div>';
+  }
+  return '<div class="reel' + (drifting ? ' drifting' : '') + '">' + h + '</div>';
+}
+
+function slot(id, items, drifting) {
+  return '<div class="slot"><div class="slot-window"></div>' +
+    '<div class="slot-inner" id="' + id + '">' + reelStrip(items, drifting) + '</div></div>';
+}
+
+/* an endless-looking idle strip built from the real pool */
+function idleStrip() {
+  var out = [];
+  for (var i = 0; i < 9; i++) out.push(POOL[i % POOL.length]);
+  return out;
+}
+
+function navHTML(variant, active) {
+  var tab = function (key, label, on) {
+    return '<button class="navtab' + (on ? ' on' : '') + '" onclick="goTab(this,\'' + key + '\')" aria-label="' + label + '"' +
+      (on ? ' aria-current="page"' : '') + '>' + icon(key) + '<span>' + label + '</span></button>';
+  };
+  if (variant === "tabs") {
+    return '<nav class="navbar" aria-label="Main"><div class="tabs">' +
+      tab("spin", "Spin", active === "spin") + tab("pool", "Pool", active === "pool") +
+      tab("add", "Add", active === "add") + tab("bench", "Benched", active === "bench") +
+      '</div></nav>';
+  }
+  if (variant === "fab") {
+    return '<nav class="navbar fab" aria-label="Main">' +
+      '<button class="fabbtn" onclick="goTab(this,\'add\')" aria-label="Add a restaurant">' + icon("add") + '</button>' +
+      '<div class="tabs">' + tab("spin", "Spin", active === "spin") +
+      '<span class="spacer"></span>' + tab("pool", "Pool", active === "pool") +
+      tab("bench", "Benched", active === "bench") + '</div></nav>';
+  }
+  return '<nav class="navbar pill" aria-label="Main"><div class="tabs">' +
+    tab("spin", "Spin", active === "spin") + tab("pool", "Pool", active === "pool") +
+    tab("add", "Add", active === "add") + tab("bench", "Benched", active === "bench") +
+    '</div></nav>';
+}
+
+/* ---------- the three home concepts ---------- */
+function homeScreen(concept, uid) {
+  var head = '<div class="kicker">' + TODAY_KICKER + '</div>';
+
+  if (concept === "live") {
+    return '<div class="scr-pad" id="' + uid + '-body">' + head +
+      '<div class="display" style="font-size:27px;margin:10px 0 20px">Where are we<br>eating tonight?</div>' +
+      slot(uid + '-slot', idleStrip(), true) +
+      '<div class="abtn-row"><button class="abtn abtn-primary" onclick="roll(\'' + uid + '\')">Roll it</button></div>' +
+      '<div class="pool-note">3 in the pool</div></div>';
+  }
+
+  if (concept === "fan") {
+    var cards = "";
+    for (var i = 0; i < 3; i++) {
+      cards += '<div class="fan-card"><div class="em">' + POOL[i].em + '</div><div class="nm">' + esc(POOL[i].name) + '</div></div>';
+    }
+    return '<div class="scr-pad" id="' + uid + '-body">' + head +
+      '<div class="display" style="font-size:27px;margin:10px 0 12px">Where are we<br>eating tonight?</div>' +
+      '<div class="fan" id="' + uid + '-fan">' + cards + '</div>' +
+      '<div class="abtn-row"><button class="abtn abtn-primary" onclick="roll(\'' + uid + '\')">Roll it</button></div>' +
+      '<div class="pool-note">3 places &middot; 1 Friday logged</div></div>';
+  }
+
+  return '<div class="scr-pad" id="' + uid + '-body">' + head +
+    '<div class="display" style="font-size:40px;margin:14px 0 30px">Where<br>are we<br>eating<br>tonight?</div>' +
+    '<div class="statline"><span class="big">3</span><span class="lbl">in the pool<b>all three never benched</b></span></div>' +
+    '<div class="statline"><span class="em">🌽</span><span class="lbl">last visit<b>Mr.Dawalter, 5 Sep</b></span></div>' +
+    '<div class="abtn-row" style="margin-top:28px"><button class="abtn abtn-primary" onclick="roll(\'' + uid + '\')">Roll it</button></div></div>';
+}
+
+/* ---------- the roll ---------- */
+function roll(uid) {
+  var body = document.getElementById(uid + '-body');
+  if (!body) return;
+  var win = POOL[Math.floor(Math.random() * POOL.length)];
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var fan = document.getElementById(uid + '-fan');
+  if (fan) fan.classList.add('collapsed');
+
+  var host = document.getElementById(uid + '-slot');
+  if (!host) {
+    /* type-led + fanned concepts: the slot machine arrives only now */
+    var mount = document.createElement('div');
+    mount.style.marginTop = '18px';
+    mount.innerHTML = slot(uid + '-slot', [], false);
+    mount.firstChild.style.animation = 'fadeInUp .4s cubic-bezier(.34,1.4,.64,1) both';
+    var btnRow = body.querySelector('.abtn-row');
+    body.insertBefore(mount, btnRow);
+    host = document.getElementById(uid + '-slot');
+  }
+
+  var strip = [];
+  for (var i = 0; i < 16; i++) strip.push(POOL[Math.floor(Math.random() * POOL.length)]);
+  strip.push(win);
+  host.innerHTML = reelStrip(strip, false);
+  var reel = host.firstChild;
+
+  var btn = body.querySelector('.abtn-primary');
+  if (btn) { btn.disabled = true; btn.textContent = 'Rolling…'; }
+
+  if (reduce) {
+    reel.style.transform = 'translateY(-' + (strip.length - 1) * ITEM_H + 'px)';
+    showResult(uid, win);
+    return;
+  }
+
+  reel.classList.add('blur');
+  void reel.offsetHeight;
+  setTimeout(function () {
+    reel.style.transition = 'transform 2.4s cubic-bezier(0.13,0.72,0.12,1)';
+    reel.style.transform = 'translateY(-' + (strip.length - 1) * ITEM_H + 'px)';
+  }, 20);
+  setTimeout(function () { reel.classList.remove('blur'); }, 1950);
+  setTimeout(function () { showResult(uid, win); }, 2550);
+}
+
+function showResult(uid, win) {
+  var body = document.getElementById(uid + '-body');
+  if (!body) return;
+  body.innerHTML =
+    '<div class="result" style="animation:fadeInUp .42s cubic-bezier(.34,1.4,.64,1) both">' +
+    '<div class="kicker">Tonight you’re eating</div>' +
+    '<div class="rem">' + win.em + '</div>' +
+    '<div class="rnm">' + esc(win.name) + '</div>' +
+    '<div class="rcz">' + win.cuisine + '</div>' +
+    '<div class="abtn-row">' +
+    '<button class="abtn abtn-primary">We’re going!</button>' +
+    '<button class="abtn abtn-ghost">Not tonight</button>' +
+    '<button class="abtn abtn-quiet" onclick="resetHome(\'' + uid + '\')">Spin again</button>' +
+    '</div></div>';
+}
+
+function resetHome(uid) {
+  var body = document.getElementById(uid + '-body');
+  if (!body) return;
+  var concept = body.getAttribute('data-concept') || 'live';
+  var holder = body.parentNode;
+  holder.innerHTML = homeScreen(concept, uid);
+  var nb = document.getElementById(uid + '-body');
+  if (nb) nb.setAttribute('data-concept', concept);
+}
+
+/* ---------- the pool list screen ---------- */
+function poolList(len) {
+  var items = POOL.slice();
+  if (len > 3) items = items.concat(FILLER.slice(0, len - 3));
+  var h = '';
+  for (var i = 0; i < items.length; i++) {
+    var r = items[i];
+    h += '<a class="row" href="#main-content" onclick="return false"><span class="em">' + r.em + '</span>' +
+      '<span class="body"><span class="nm">' + esc(r.name) + '</span>' +
+      '<span class="sub">' + r.cuisine + '</span></span></a>';
+  }
+  return h;
+}
+
+function poolScreen(variant) {
+  return '<div class="scr-pad" style="padding-bottom:92px">' +
+    '<div class="display" style="font-size:22px;text-align:center;margin-bottom:20px">The pool</div>' +
+    poolList(activeLen) + '</div>';
+}
+
+/* ---------- frame assembly ---------- */
+function phone(palCls, inner, navMarkup, flag) {
+  return '<div class="phone ' + palCls + '">' +
+    (flag ? flag : '') + statusbar() +
+    '<div class="screen">' + inner + '</div>' +
+    (navMarkup ? navMarkup : '') + '</div>';
+}
+
+function pickCtl(group, value, label) {
+  return '<label class="pick"><input type="radio" name="' + group + '" value="' + value + '" ' +
+    'onchange="setPick(\'' + group + '\',\'' + value + '\')">' + label + '</label>';
+}
+
+/* ---------- SECTION 1: now ---------- */
+function buildNow() {
+  var faces = [
+    { cls: "pal-now-light", name: "Today, light phone", why: "What a phone set to Light shows. Note the nav: three small text links that stop right where the list stops." },
+    { cls: "pal-now-dark", name: "Today, dark phone", why: "Same build, phone set to Dark. Neither of you chose this — the OS did, and it can differ between your two phones." }
+  ];
+  var h = '';
+  for (var i = 0; i < faces.length; i++) {
+    var f = faces[i];
+    /* the current, in-flow nav — deliberately NOT pinned */
+    var inner = '<div class="scr-pad">' +
+      '<div class="display" style="font-size:22px;text-align:center;margin-bottom:20px">The pool</div>' +
+      poolList(3) +
+      '<div class="oldnav"><span>← Spin</span><span>Add</span><span>Benched</span></div>' +
+      '</div>';
+    var flag = '<div class="note-flag" style="bottom:150px">↑ The nav stops here, mid-screen, because it is just text in the content flow</div>';
+    h += '<div class="opt animate delay-' + (i + 1) + '">' +
+      '<div class="opt-head"><span class="opt-name">' + f.name + '</span><span class="opt-tag warn">now</span></div>' +
+      '<div class="opt-why">' + f.why + '</div>' +
+      phone(f.cls, inner, '', flag) + '</div>';
+  }
+  document.getElementById('nowFrames').innerHTML = h;
+}
+
+/* ---------- SECTION 2: palettes ---------- */
+function buildPalettes() {
+  var order = ["candlelit", "blush", "berry"];
+  var why = {
+    candlelit: "Deep wine ground, coral rose against amber. Date night is an evening thing — the gradient glow has somewhere dark to bloom, and the cuisine emoji pop.",
+    blush: "Your current daytime face, locked in for both phones. Softest of the three, and the only one that stays readable in bright sun on a terrace.",
+    berry: "Indigo-aubergine with magenta into violet. Cooler and more electric — reads closer to nightlife than to a candlelit table."
+  };
+  var tag = { candlelit: "suggested", blush: "", berry: "" };
+  var h = '';
+  for (var i = 0; i < order.length; i++) {
+    var k = order[i], p = PALETTES[k];
+    var sw = '', tk = '';
+    for (var j = 0; j < p.toks.length; j++) {
+      sw += '<div class="sw" style="background:' + p.toks[j][1] + '"></div>';
+      tk += '<b>' + p.toks[j][0] + '</b> ' + p.toks[j][1] + '<br>';
+    }
+    var inner = '<div id="pal-' + k + '-wrap">' + homeScreen("live", "pal-" + k) + '</div>';
+    h += '<div class="opt" data-reveal>' +
+      '<div class="opt-head"><span class="opt-name">' + p.name + '</span>' +
+      (tag[k] ? '<span class="opt-tag">' + tag[k] + '</span>' : '') + '</div>' +
+      '<div class="opt-why">' + why[k] + '</div>' +
+      phone(p.cls, inner, navHTML("tabs", "spin"), '') +
+      '<div class="swatches">' + sw + '</div>' +
+      '<div class="tokens">' + tk + '</div>' +
+      pickCtl('palette', k, p.name) + '</div>';
+  }
+  document.getElementById('paletteFrames').innerHTML = h;
+  ["candlelit", "blush", "berry"].forEach(function (k) {
+    var b = document.getElementById('pal-' + k + '-body');
+    if (b) b.setAttribute('data-concept', 'live');
+  });
+}
+
+/* ---------- SECTION 3: home concepts ---------- */
+function buildHomes() {
+  var order = ["live", "fan", "type"];
+  var why = {
+    live: "The frame stays, but it drifts through your actual restaurants instead of holding a dice. The idle state becomes a teaser for the pool, and Roll it just speeds up something already moving.",
+    fan: "A hand of cuisine cards. Roll it collapses the fan and the reel takes over. The most playful of the three, and the only one that shows three places at rest.",
+    type: "No frame at all until you roll. Big serif question, two honest stats, one button — then the slot machine drops in. Calmest screen, biggest payoff on the tap."
+  };
+  var tag = { live: "suggested", fan: "", type: "" };
+  var pal = PALETTES[activePalette];
+  var h = '';
+  for (var i = 0; i < order.length; i++) {
+    var c = order[i];
+    var inner = '<div id="home-' + c + '-wrap">' + homeScreen(c, "home-" + c) + '</div>';
+    h += '<div class="opt" data-reveal>' +
+      '<div class="opt-head"><span class="opt-name">' + HOME_NAMES[c] + '</span>' +
+      (tag[c] ? '<span class="opt-tag">' + tag[c] + '</span>' : '') + '</div>' +
+      '<div class="opt-why">' + why[c] + '</div>' +
+      phone(pal.cls, inner, navHTML("tabs", "spin"), '') +
+      pickCtl('home', c, HOME_NAMES[c]) + '</div>';
+  }
+  document.getElementById('homeFrames').innerHTML = h;
+  order.forEach(function (c) {
+    var b = document.getElementById('home-' + c + '-body');
+    if (b) b.setAttribute('data-concept', c);
+  });
+  restorePick('home');
+  observeReveals();
+}
+
+/* ---------- SECTION 4: nav ---------- */
+function buildNavs() {
+  var order = ["tabs", "fab", "pill"];
+  var why = {
+    tabs: "One shared bar, 62px tall, icon over label, active tab in an accent pill. Four honest targets, nothing hidden, and the labels mean you never have to guess an icon.",
+    fab: "Adding a place gets promoted to a circular button riding the top edge of the bar. Best if Add is the thing you reach for most — but it costs a label.",
+    pill: "A floating rounded bar sitting 14px off the bottom edge. The most designed of the three; targets are a little tighter and content peeks underneath."
+  };
+  var tag = { tabs: "suggested", fab: "", pill: "" };
+  var pal = PALETTES[activePalette];
+  var h = '';
+  for (var i = 0; i < order.length; i++) {
+    var v = order[i];
+    h += '<div class="opt" data-reveal>' +
+      '<div class="opt-head"><span class="opt-name">' + NAV_NAMES[v] + '</span>' +
+      (tag[v] ? '<span class="opt-tag">' + tag[v] + '</span>' : '') + '</div>' +
+      '<div class="opt-why">' + why[v] + '</div>' +
+      phone(pal.cls, poolScreen(v), navHTML(v, "pool"), '') +
+      pickCtl('nav', v, NAV_NAMES[v]) + '</div>';
+  }
+  document.getElementById('navFrames').innerHTML = h;
+  restorePick('nav');
+  observeReveals();
+}
+
+/* ---------- interactions ---------- */
+function goTab(btn, key) {
+  var bar = btn.closest('.navbar');
+  if (!bar) return;
+  var tabs = bar.querySelectorAll('.navtab');
+  for (var i = 0; i < tabs.length; i++) {
+    tabs[i].classList.remove('on');
+    tabs[i].removeAttribute('aria-current');
+  }
+  var hit = bar.querySelector('.navtab[onclick*="\'' + key + '\'"]');
+  if (hit) { hit.classList.add('on'); hit.setAttribute('aria-current', 'page'); }
+
+  var phoneEl = btn.closest('.phone');
+  var screen = phoneEl ? phoneEl.querySelector('.screen') : null;
+  if (!screen) return;
+  var uid = 'tab-' + Math.random().toString(36).slice(2, 8);
+
+  if (key === 'spin') {
+    screen.innerHTML = '<div id="' + uid + '-wrap">' + homeScreen('live', uid) + '</div>';
+    var b = document.getElementById(uid + '-body');
+    if (b) { b.setAttribute('data-concept', 'live'); b.style.paddingBottom = '92px'; }
+  } else if (key === 'pool') {
+    screen.innerHTML = poolScreen();
+  } else if (key === 'bench') {
+    screen.innerHTML = '<div class="scr-pad" style="padding-bottom:92px">' +
+      '<div class="display" style="font-size:22px;text-align:center;margin-bottom:20px">Benched</div>' +
+      '<p style="font-size:13px;text-align:center;color:var(--text-secondary);margin-top:30px">' +
+      'Nothing benched — the whole list is in play.</p></div>';
+  } else {
+    screen.innerHTML = '<div class="scr-pad" style="padding-bottom:92px">' +
+      '<div class="display" style="font-size:22px;text-align:center;margin-bottom:20px">Add a place</div>' +
+      '<div class="row" style="display:block;padding:13px 14px"><span class="sub">Google Maps link</span>' +
+      '<div style="font-size:13px;margin-top:3px;color:var(--text-secondary)">maps.app.goo.gl/…</div></div>' +
+      '<div class="abtn-row"><button class="abtn abtn-primary">Add it</button></div></div>';
+  }
+  screen.scrollTop = 0;
+}
+
+function setPalette(k) {
+  activePalette = k;
+  var btns = document.querySelectorAll('.pbtn[data-pal]');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-pal') === k);
+  buildHomes();
+  buildNavs();
+}
+
+function setLen(n) {
+  activeLen = n;
+  var btns = document.querySelectorAll('.pbtn[data-len]');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-len') === String(n));
+  buildNavs();
+}
+
+function setPick(group, value) {
+  picks[group] = value;
+  var map = {
+    palette: { el: 'sumPalette', names: { candlelit: "Candlelit dark", blush: "Warm blush light", berry: "Midnight berry" } },
+    home: { el: 'sumHome', names: HOME_NAMES },
+    nav: { el: 'sumNav', names: NAV_NAMES }
+  }[group];
+  var el = document.getElementById(map.el);
+  el.textContent = map.names[value];
+  el.classList.remove('empty');
+}
+
+function restorePick(group) {
+  if (!picks[group]) return;
+  var inp = document.querySelector('input[name="' + group + '"][value="' + picks[group] + '"]');
+  if (inp) inp.checked = true;
+}
+
+function copyPicks() {
+  var names = {
+    palette: { candlelit: "Candlelit dark", blush: "Warm blush light", berry: "Midnight berry" },
+    home: HOME_NAMES, nav: NAV_NAMES
+  };
+  var lines = [];
+  lines.push("Palette: " + (picks.palette ? names.palette[picks.palette] : "(not picked)"));
+  lines.push("Home screen: " + (picks.home ? names.home[picks.home] : "(not picked)"));
+  lines.push("Nav bar: " + (picks.nav ? names.nav[picks.nav] : "(not picked)"));
+  var txt = lines.join("\n");
+  var btn = document.getElementById('copyBtn');
+  function done(ok) {
+    btn.textContent = ok ? "Copied — paste it back to me" : "Copy failed — select the text above";
+    setTimeout(function () { btn.textContent = "Copy my picks"; }, 2600);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(function () { done(true); }, function () { done(false); });
+  } else { done(false); }
+}
+
+/* ---------- menu + theme ---------- */
+function toggleMenu() {
+  var d = document.getElementById('vizMenuDropdown');
+  if (d) d.classList.toggle('open');
+}
+document.addEventListener('click', function (e) {
+  var d = document.getElementById('vizMenuDropdown');
+  if (!e.target.closest('.viz-menu') && d) d.classList.remove('open');
+});
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') {
+    var d = document.getElementById('vizMenuDropdown');
+    if (d) d.classList.remove('open');
+  }
+});
+
+function applyTheme(t) {
+  document.documentElement.className = 'theme-' + t;
+  try { localStorage.setItem('dnr-viz-theme', t); } catch (err) {}
+}
+function cycleTheme() {
+  var cur = document.documentElement.classList.contains('theme-dark') ? 'dark' : 'light';
+  applyTheme(cur === 'dark' ? 'light' : 'dark');
+}
+(function initTheme() {
+  var saved = null;
+  try { saved = localStorage.getItem('dnr-viz-theme'); } catch (err) {}
+  if (!saved) saved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  applyTheme(saved);
+})();
+
+function downloadImage() {
+  var d = document.getElementById('vizMenuDropdown');
+  if (d) d.classList.remove('open');
+  if (typeof htmlToImage === 'undefined') { console.error('html-to-image not loaded'); return; }
+  htmlToImage.toPng(document.getElementById('main-content'), {
+    backgroundColor: getComputedStyle(document.body).backgroundColor, pixelRatio: 2
+  }).then(function (url) {
+    var a = document.createElement('a');
+    a.download = 'date-night-roulette-design-directions.png';
+    a.href = url;
+    a.click();
+  }).catch(function (err) { console.error('PNG export failed:', err); });
+}
+
+/* ---------- scroll reveal ---------- */
+var revealObs = null;
+function observeReveals() {
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('[data-reveal]').forEach(function (el) { el.classList.add('in'); });
+    return;
+  }
+  if (!revealObs) {
+    revealObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('in'); revealObs.unobserve(en.target); }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  }
+  document.querySelectorAll('[data-reveal]:not(.in)').forEach(function (el) { revealObs.observe(el); });
+}
+
+/* ---------- boot ---------- */
+document.addEventListener('DOMContentLoaded', function () {
+  buildNow();
+  buildPalettes();
+  buildHomes();
+  buildNavs();
+  observeReveals();
+});
+</script>

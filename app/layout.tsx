@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
+import { BottomNav } from "./nav";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#d6455f",
+  themeColor: "#130e1f",
   viewportFit: "cover",
 };
 
@@ -36,9 +37,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${inter.variable} ${fraunces.variable}`}>
       <body>
-        <div id="app-root" className="min-h-full flex flex-col">
+        <div id="app-root" className="min-h-dvh flex flex-col">
           {children}
         </div>
+        <BottomNav />
       </body>
     </html>
   );

@@ -28,17 +28,11 @@ export default async function RestaurantsPage() {
               const cuisine = cuisineFor(r.cuisine);
               return (
                 <li key={r.id}>
-                  <Link
-                    href={`/restaurants/${r.id}`}
-                    className="flex items-center gap-3 rounded-[14px] border px-4 py-3"
-                    style={{ background: "var(--surface)", borderColor: "var(--border)" }}
-                  >
-                    <span className="text-2xl">{cuisine.emoji}</span>
-                    <span className="flex-1">
-                      <span className="block font-semibold">{r.name}</span>
-                      <span className="block text-xs" style={{ color: "var(--text-secondary)" }}>
-                        {cuisine.label}
-                      </span>
+                  <Link href={`/restaurants/${r.id}`} className="row">
+                    <span className="row-em">{cuisine.emoji}</span>
+                    <span className="row-body">
+                      <span className="row-nm">{r.name}</span>
+                      <span className="row-sub">{cuisine.label}</span>
                     </span>
                   </Link>
                 </li>
@@ -46,12 +40,6 @@ export default async function RestaurantsPage() {
             })}
           </ul>
         )}
-
-        <div className="flex justify-center gap-5 text-sm mt-8" style={{ color: "var(--text-secondary)" }}>
-          <Link href="/">← Spin</Link>
-          <Link href="/add">Add</Link>
-          <Link href="/benched">Benched</Link>
-        </div>
       </div>
     </main>
   );

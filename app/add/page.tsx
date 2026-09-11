@@ -2,7 +2,6 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { CUISINES } from "@/lib/cuisines";
 import { addRestaurant } from "@/lib/actions";
 import { resolveLink } from "./actions";
@@ -156,11 +155,6 @@ export default function AddPage() {
           </div>
         )}
 
-        <div className="text-center mt-6">
-          <Link href="/" className="text-sm" style={{ color: "var(--text-secondary)" }}>
-            ← Back
-          </Link>
-        </div>
       </div>
     </main>
   );

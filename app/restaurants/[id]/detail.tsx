@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Restaurant, Visit } from "@/db/schema";
 import { CUISINES, cuisineFor } from "@/lib/cuisines";
@@ -166,12 +165,6 @@ export function RestaurantDetail({
               Delete this restaurant
             </button>
           )}
-        </div>
-
-        <div className="flex justify-center gap-5 text-sm mt-8" style={{ color: "var(--text-secondary)" }}>
-          <Link href="/">← Spin</Link>
-          <Link href="/restaurants">Pool</Link>
-          <Link href="/benched">Benched</Link>
         </div>
       </div>
     </main>

@@ -1,29 +1,21 @@
 @import "tailwindcss";
 
+/* One fixed theme — "Midnight berry". Deliberately not device-dependent:
+   both of us should see the same app on the same Friday night. */
 :root {
-  --bg: #fff7f4;
-  --surface: #ffffff;
-  --surface-hover: #fff0eb;
-  --border: rgba(90, 40, 55, 0.1);
-  --text: #2c161e;
-  --text-secondary: #8a6a74;
-  --accent: #d6455f;
-  --accent-secondary: #e07b3c;
-  --glow: rgba(214, 69, 95, 0.18);
-}
+  color-scheme: dark;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #140e11;
-    --surface: #1f1519;
-    --surface-hover: #2b1e23;
-    --border: rgba(255, 225, 232, 0.09);
-    --text: #f6e9ec;
-    --text-secondary: #aa8b94;
-    --accent: #ff6b85;
-    --accent-secondary: #ffa45c;
-    --glow: rgba(255, 107, 133, 0.22);
-  }
+  --bg: #130e1f;
+  --surface: #1d1730;
+  --surface-hover: #282041;
+  --border: rgba(237, 233, 247, 0.1);
+  --text: #ede9f7;
+  --text-secondary: #9b92b8;
+  --accent: #f0568f;
+  --accent-secondary: #8b5cf6;
+  --glow: rgba(240, 86, 143, 0.24);
+
+  --nav-h: 62px;
 }
 
 * {
@@ -32,7 +24,7 @@
 
 html,
 body {
-  height: 100%;
+  min-height: 100dvh;
 }
 
 body {
@@ -53,12 +45,14 @@ body::before {
   z-index: 0;
   background:
     radial-gradient(760px 420px at 12% -6%, var(--glow), transparent 62%),
-    radial-gradient(680px 400px at 92% 4%, rgba(224, 123, 60, 0.13), transparent 60%);
+    radial-gradient(680px 400px at 92% 4%, color-mix(in srgb, var(--accent-secondary) 20%, transparent), transparent 60%);
 }
 
 #app-root {
   position: relative;
   z-index: 1;
+  /* Clear the fixed bottom nav once, here, rather than on every page. */
+  padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom));
 }
 
 h1,
@@ -122,6 +116,113 @@ a {
   cursor: not-allowed;
 }
 
+/* ===== BOTTOM NAV ===== */
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* #app-root is a z-index:1 stacking context; this is its sibling. */
+  z-index: 10;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid var(--border);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.bottom-nav ul {
+  display: flex;
+  height: var(--nav-h);
+  margin: 0;
+  padding: 0 6px 4px;
+  list-style: none;
+}
+.bottom-nav li {
+  flex: 1;
+  display: flex;
+}
+.nav-tab {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  margin: 5px 2px;
+  border-radius: 14px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition:
+    color 0.16s,
+    background 0.16s;
+}
+.nav-tab svg {
+  width: 21px;
+  height: 21px;
+}
+.nav-tab:hover {
+  color: var(--text);
+}
+.nav-tab[aria-current="page"] {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 13%, transparent);
+}
+
+/* ===== LIST ROW (the pool / benched card) ===== */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 11px 14px;
+  transition: background 0.16s;
+}
+a.row:hover {
+  background: var(--surface-hover);
+}
+.row .row-em {
+  font-size: 24px;
+  line-height: 1;
+}
+.row .row-body {
+  flex: 1;
+  min-width: 0;
+}
+.row .row-nm {
+  display: block;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.row .row-sub {
+  display: block;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* ===== HOME HEADER ===== */
+.kicker-date {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  min-height: 1.4em;
+}
+.home-question {
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.08;
+  margin-top: 8px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -130,24 +231,28 @@ a {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
+  .reel.drifting {
+    animation: none !important;
+  }
 }
 
 /* ===== TUMBLE (the spin mechanic) ===== */
 .spin-column {
-  width: 300px;
+  width: min(300px, 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 .slot-frame {
-  width: 300px;
-  height: 300px;
+  width: 100%;
+  aspect-ratio: 1;
+  max-height: 300px;
   border-radius: 26px;
   overflow: hidden;
   position: relative;
   background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 9%, var(--surface)), var(--surface));
   border: 1px solid var(--border);
-  box-shadow: inset 0 0 40px rgba(60, 20, 35, 0.1);
+  box-shadow: inset 0 0 40px color-mix(in srgb, var(--text) 7%, transparent);
 }
 .slot-frame::before,
 .slot-frame::after {
@@ -211,6 +316,20 @@ a {
 }
 .reel.blur .reel-item {
   filter: blur(2.2px);
+}
+
+/* Idle state: drift through the real pool instead of holding a placeholder.
+   --drift-dist is one full pool cycle, so the loop has no visible seam. */
+.reel.drifting {
+  animation: drift var(--drift-time, 9s) linear infinite;
+}
+@keyframes drift {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-1 * var(--drift-dist, 324px)));
+  }
 }
 
 .pool-note {
